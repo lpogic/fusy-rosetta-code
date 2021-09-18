@@ -1,0 +1,68 @@
+@float randomNumber()
+  return random(range(1, 9):set):asFloat
+<
+
+@boolean sum(Subject es) return eval(es, @(n1, n2) n2 + n1) <
+@boolean sub(Subject es) return eval(es, @(n1, n2) n2 - n1) <
+@boolean mul(Subject es) return eval(es, @(n1, n2) n2 * n1) <
+@boolean div(Subject es) return eval(es, @(n1, n2) n2 / n1) <
+
+
+@boolean eval(Subject es, {Float, Float}Float ae)
+  if es.size() < 2, return false
+  #n1 = es.take(es:last:raw):in:asFloat
+  #n2 = es.take(es:last:raw):in:asFloat
+  es.add(ae:(n1, n2))
+  return true
+<
+
+#choosenNumbers = random(range(1, 9):set, true).first(4):eachOut:set
+MAIN_LOOP!! while true
+  #numbers = #:copy(choosenNumbers)
+  pln("Choosen numbers are: "+ numbers:eachIn:eachInt:toString(", ", " and "))
+  #expStack = []
+  #cmd = rln("24 game> ")
+  switch cmd
+    case "exit", return
+    case "help" | "?", pln("
+      help, ? - shows help\n
+      exit - closes program\n
+      reset - resets choosen numbers\n
+      other symbols are interpreted as rpn expression and evaluated")
+    case "reset", choosenNumbers = random(range(1, 9):set, true).first(4):eachOut:set
+    rest
+      for #cps codePoints(cmd)
+        #cp = cps.asInt()
+        switch cp
+          case '+', if !sum(expStack), pln("Invalid RPN expression") \ continue MAIN_LOOP
+          case '-', if !sub(expStack), pln("Invalid RPN expression") \ continue MAIN_LOOP
+          case '*', if !mul(expStack), pln("Invalid RPN expression") \ continue MAIN_LOOP
+          case '/', if !div(expStack), pln("Invalid RPN expression") \ continue MAIN_LOOP
+          rest
+            if cp >= '1' && cp <= '9'
+              #n = cp - '1' + 1
+              #in = numbers.select(@(s) s:in:asInt == n).first()
+              if in.present()
+                numbers.unset(in:raw)
+                expStack.add(n)
+              < else pln("There is no more #[@char(cp)] to use") \ continue MAIN_LOOP
+            < else pln("Invalid input '#[@char(cp)]'") \ continue MAIN_LOOP
+          <
+        <
+      <
+    <
+  <
+  if numbers.present(), pln("Every choosen number must appear exactly one time")
+  else
+    if expStack.size() == 1
+      #result = expStack:in:asFloat
+      pln("Result is #result")
+      if result == 24, pln("YOU WIN!") \ return
+      else pln("YOU LOOSE") \ return
+    < else
+      pln("Invalid RPN expression")
+      continue MAIN_LOOP
+    <
+  <
+<
+  

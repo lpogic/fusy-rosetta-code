@@ -1,0 +1,101 @@
+*class Sandpile
+  -int{}{} grid
+  
+  @new Sandpile(int size)
+    grid = new int{size}{size}
+  <
+
+  @new Sandpile(Subject s)
+    #a = @int(Math.sqrt(s:size))
+    grid = new int{a}{a}
+    #cs = s:eachIn:eachInt:cascade()
+    for #x range(0, a - 1), for #y range(0, a - 1), grid{x}{y} = cs.next()
+  <
+      
+
+  @void spawn(int x, int y, int size)
+    grid{x}{y} = size
+  <
+
+  @boolean topple()
+    #toppled = false
+    #xMax = grid.length - 1
+    #yMax = grid{0}.length - 1
+    for #x range(0, xMax), for #y range(0, yMax)
+      if grid{x}{y} > 3
+        grid{x}{y} -= 4
+        if x > 0, grid{x - 1}{y} += 1
+        if x < xMax, grid{x + 1}{y} += 1
+        if y > 0, grid{x}{y - 1} += 1
+        if y < yMax, grid{x}{y + 1} += 1
+        toppled = true
+      <
+    <
+    return toppled
+  <
+
+  @void avalanche() while topple() <<
+
+  @void draw() 
+    for #y grid
+      for #c y, print("#c ")
+      pln() 
+    <
+  <
+
+  *Sandpile add(Sandpile s1, Sandpile s2)
+    #r = []
+    for #x range(0, s1.grid.length - 1), for #y range(0, s1.grid{0}.length - 1)
+      r.add(s1.grid{x}{y} + s2.grid{x}{y})
+    <
+    #rs = new Sandpile(r)
+    rs.avalanche()
+    return rs
+  <
+<
+
+#s1 = new Sandpile([[1;2;0;2;1;1;0;1;3]])
+pln("s1 =")
+s1.draw()
+pln()
+#s2 = new Sandpile([[2;1;3;1;0;1;0;1;0]])
+pln("s2 =")
+s2.draw()
+pln()
+#s12 = Sandpile.add(s1, s2)
+pln("s1 + s2 =")
+s12.draw()
+pln()
+#s21 = Sandpile.add(s2, s1)
+pln("s2 + s1 =")
+s21.draw()
+pln()
+
+#s4 = new Sandpile([[4;3;3;3;1;2;0;2;3]])
+pln("s4 before avalanche =")
+s4:draw
+pln()
+s4:avalanche
+pln("s4 after avalanche =")
+s4:draw
+pln()
+
+#s3 = new Sandpile([[3;3;3;3;3;3;3;3;3]])
+pln("s3 =")
+s3.draw()
+pln()
+
+#s3_id = new Sandpile([[2;1;2;1;0;1;2;1;2]])
+pln("s3_id =")
+s3_id.draw()
+pln()
+
+#s3s3_id = Sandpile.add(s3, s3_id)
+pln("s3 + s3_id =")
+s3s3_id.draw()
+pln()
+
+#s3_ids3_id = Sandpile.add(s3_id, s3_id)
+pln("s3_id + s3_id =")
+s3_ids3_id.draw()
+pln()

@@ -1,0 +1,8 @@
+@String s(int b) return b == 1 ? "" !! "s" <
+
+for #b range(99, 1), pln("
+  #b bottle#[s(b)] of beer on the wall\n
+  #b bottle#[s(b)] of beer\n
+  Take one down, pass it around\n
+  #[b - 1] bottle#[s(b - 1)] of beer on the wall\n
+")

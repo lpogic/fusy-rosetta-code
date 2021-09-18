@@ -1,0 +1,176 @@
+@enum Move
+  DOWN(-4, 0, 1, 2, 3)
+  UP(+4, 12, 13, 14, 15)
+  LEFT(+1, 3, 7, 11, 15)
+  RIGHT(-1, 0, 4, 8, 12)
+
+>
+  @^Sequence<Move> options(int slotPosition)
+    #options = #[]
+    for #m Move.values()
+      if m.isAllowedForPosition(slotPosition), options.set(m) <
+    <
+    return options.eachAs(Move@)
+  <
+
+  static final Subject options = Sequence.of(Move:values).set()
+
+  final int offset
+  final Subject bannedMoves
+ 
+  @new Move(int offset, int b1, int b2, int b3, int b4)
+    this.offset = offset
+    bannedMoves = #[b1, b2, b3, b4]
+  <
+
+  @boolean isAllowedForPosition(int position)
+    return bannedMoves.absent(position) 
+  <
+
+  @int offset()
+    return offset
+  <
+
+  @Move counter()
+    switch this
+      case DOWN, return UP <
+      case UP, return DOWN <
+      case LEFT, return RIGHT <
+      case RIGHT, return LEFT <
+    <
+    return null
+  <
+<
+
+@class Puzzle
+  Subject puzzle
+  int slotPosition
+  int moves
+  int total
+ 
+  @new Puzzle()
+    puzzle = #[]
+    slotPosition = 15
+    for #i range(0, 15), puzzle.put(i, i) <
+  <
+
+  @new Puzzle(Series puzzle)
+    this.puzzle = puzzle.convert(#(s) #[s:asInt == 0 ? 15 !! s:asInt - 1]).index(range(0, 15)).set()
+    this.slotPosition = puzzle:eachInt.indexOf(#(i) i == 15)
+    this.moves = 0
+    this.total = entropy()
+  <
+
+
+  @new Puzzle(Series puzzle, int slotPosition, int moves, int total)
+    this.puzzle = puzzle.index(range(0, 15)).set()
+    this.slotPosition = slotPosition
+    this.moves = moves
+    this.total = total
+  <
+
+  @Puzzle ident()
+    return new Puzzle(puzzle.eachIn(), slotPosition, moves, total)
+  <
+
+  @Puzzle moved(Move move)
+    #p = ident()
+    p.move(move)
+    p.total = p.moves + p.entropy()
+    return p
+  <
+
+  @boolean move(Move move)
+    if move.isAllowedForPosition(slotPosition)
+      swap(puzzle, slotPosition, slotPosition + move:offset)
+      slotPosition += move:offset
+      ++moves
+      return true
+    <
+    return false
+  <
+ 
+  @boolean equals(Object o)
+    if o instanceof Puzzle that
+      for #p puzzle:eachIn.index(that.puzzle:eachIn:eachInt)
+        if p:asInt != p:in:asInt, return false <
+      < return true
+    < return false
+  <
+
+  @int hashCode()
+    int hash = 0xF
+    for #p puzzle:eachIn:eachInt, hash ^= p \ hash <<= 1 <
+    return hash
+  <
+
+  @int entropy()
+    #entropy = 0
+    for #p puzzle
+      #s = p:asInt
+      #i = p:in:asInt
+      entropy += Math.abs(s % 4 - i % 4)
+      entropy += Math.abs(s / 4 - i / 4)
+    <
+    return entropy
+  <
+  
+
+  @boolean solved()
+    for #p puzzle, if p:asInt != p:in:asInt, return false <<
+    return true
+  < 
+
+  @void draw()
+    for #y range(0, 3)
+      println("+---+---+---+---+")
+      for #x range(0, 3)
+        #x1 = puzzle.in(4 * y + x).asInt()
+        if x1 == 15, print("|   ") <
+        else print("| #[x1 > 8 ? (x1 + 1) !! (x1 + 1) + " "]") <
+      <
+      println("|")
+    <
+    println("+---+---+---+---+")
+  <
+<
+
+#start = new Puzzle(#[
+  15, 14,  1,  6,
+  9, 11,  4, 12,
+  0, 10,  7,  3,
+  13,  8,  5,  2
+])
+start.draw()
+if start.solved(), println("PUZZLE ARE ALREADY SOLVED!") \ return <
+#puzzles = #[start]
+while true
+  #p = puzzles.take(min(puzzles, 
+    #(p1, p2)
+      #pz1 = @Puzzle(p1:one)
+      #pz2 = @Puzzle(p2:one)
+      return pz1.total - pz2.total
+    <
+  ):raw).as(Puzzle@)
+  for #move Move.options(p.slotPosition)
+    #newPuzzle = p.moved(move)
+    if puzzles.absent(newPuzzle)
+      puzzles.put(newPuzzle, move)
+      if newPuzzle.solved()
+        printMoves(puzzles, start, newPuzzle)
+        return
+      <
+    <
+  <
+  println(puzzles.size())
+<
+
+@void printMoves(Subject puzzles, Puzzle start, Puzzle current)
+  #moves = #[]
+  while !current.equals(start)
+    #m = puzzles.in(current).as(Move@)
+    moves.add(m)
+    current = current.moved(m.counter())
+  < 
+  moves:reverse:list:print
+<

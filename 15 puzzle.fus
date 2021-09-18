@@ -1,0 +1,113 @@
+@enum Move
+  DOWN(-4, 1, 2, 3, 4)
+  UP(+4, 13, 14, 15, 16)
+  LEFT(+1, 4, 8, 12, 16)
+  RIGHT(-1, 1, 5, 9, 13)
+>
+  !*Subject options = Sequence.of(Move:values):set
+
+  -int offset
+  -Subject bannedMoves
+
+  -new Move(int offset, int b1, int b2, int b3, int b4)
+    this.offset = offset
+    bannedMoves = [b1, b2, b3, b4]
+  <
+
+  +boolean isAllowedForPosition(int position)
+    return bannedMoves.absent(position) 
+  <
+
+  +int offset()
+    return offset
+  <
+<
+
+@class Puzzle
+  @Subject puzzle
+  @int slot_position
+ 
+  @new Puzzle()
+    puzzle = []
+    slot_position = 16
+    for #i range(1, 16), puzzle.put(i, i)
+  <
+
+  @new Puzzle(Series puzzle)
+    this.puzzle = puzzle.index(range(1, 16)):set
+    this.slot_position = puzzle:eachInt.indexOf(@(i) i == 16) + 1
+  <
+
+  @boolean move(Move move)
+    if move.isAllowedForPosition(slot_position)
+      puzzle.swap(slot_position, slot_position + move:offset)
+      slot_position += move:offset
+      return true
+    <
+    return false
+  <
+
+  @void shuffle(int moves)
+    for #i range(1, moves), move(mix(Move.options):one)
+  <
+
+  @boolean solved()
+    for #p puzzle, if p:asInt != p:in:asInt, return false
+    return true
+  < 
+
+  @void draw()
+    for #y range(0, 3)
+      pln("+---+---+---+---+")
+      for #x range(1, 4)
+        #x1 = puzzle.in(4 * y + x):asInt 
+        if x1 == 16, print("|   ")
+        else print("| #[x1 > 9 ? x1 !! x1 + " "]")
+
+      <
+      pln("|")
+    <
+    pln("+---+---+---+---+")
+  <
+<
+
+\\\\ UI \\\\
+
+#moveControl = [
+  #w [ Move.UP ]
+  #s [ Move.DOWN ]
+  #a [ Move.LEFT ]
+  #d [ Move.RIGHT ]
+]
+
+@void doMove(Puzzle puzzle, Subject movesCnt, Move move) 
+ if !puzzle.move(move), pln("Invalid move #move!")
+ movesCnt #= movesCnt:asInt + 1
+<
+
+#puzzle = new Puzzle()
+#movesCnt = [0]
+puzzle.shuffle(10)
+#cmd = ""
+while !"exit".equals(cmd)
+  puzzle.draw()
+  if puzzle.solved(), pln("YOU WIN IN #[movesCnt:asInt] MOVES!") \ return
+  cmd = rln("15puzzle> ")
+  switch cmd
+    case "help", pln("
+      help - shows help\n
+      w - move up\n
+      s - move down\n
+      a - move left\n
+      d - move right\n
+      \\ moves can be mixed\n
+      exit - closes program")
+    case "exit" <
+    case "bye", pln("Bye!") \ return
+    rest, for #c cmd:split("")
+      #move = moveControl:[c]
+      if move:present, doMove(puzzle, movesCnt, move:one)
+      else pln("Invalid cmd #c")
+    <
+  <
+<

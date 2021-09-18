@@ -1,0 +1,2 @@
+@int agpiFormula(int n)
+  return 32 * 6 * n

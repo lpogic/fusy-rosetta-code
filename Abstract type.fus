@@ -1,0 +1,9 @@
+@?class AbstractClass
+  @?void abstractMethod()
+  @void regularMethod() <
+<
+
+@interface Interface
+  @?void abstractMethod()
+  @void regularMethod() <
+<

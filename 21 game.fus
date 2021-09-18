@@ -1,0 +1,50 @@
+@interface AI
+  @?int pick(int currentTotal)
+<
+
+@class SAI implements AI
+  +int pick(int currentTotal)
+    if currentTotal > 17, return 21 - currentTotal
+    if currentTotal < 1, return 1
+    return random([1, 2, 3]):asInt
+  <
+<
+
+#runningTotal = 0
+#ai = new SAI()
+#cmd = ""
+if random(0.5)
+  #aiPick = ai.pick(runningTotal)
+  pln("Computer picks #aiPick")
+  runningTotal += aiPick
+  pln("Running total: #runningTotal")
+<
+while !"exit".equals(cmd)
+  cmd = rln("21 game> ")
+  switch cmd
+    case "help" | "?", pln("
+      help, ? - shows help\n
+      total - prints running total\n
+      1 - adds 1 to running total\n
+      2 - adds 2 to running total\n
+      3 - adds 3 to running total\n
+      exit - close this program")
+    case "total", pln("Running total: #runningTotal")
+    case "exit" <
+    rest switch cmd
+      case "1" | "2" | "3"
+        runningTotal += Integer.parseInt(cmd)
+        pln("Running total: #runningTotal")
+        if runningTotal == 21, pln("YOU WIN!") \ return
+        if runningTotal > 21, pln("YOU LOOSE!") \ return
+        #aiPick = ai.pick(runningTotal)
+        pln("Computer picks #aiPick")
+        runningTotal += aiPick
+        pln("Running total: #runningTotal")
+        if runningTotal == 21, pln("YOU LOOSE!") \ return
+        if runningTotal > 21, pln("YOU WIN!") \ return
+      <
+      rest pln("Invalid cmd '#cmd'. Type 'help' to list commands")
+    <
+  <
+<

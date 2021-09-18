@@ -1,0 +1,94 @@
+@void solve(Subject digits)
+  #operators = [ 
+    @{Subject}Boolean(this::sum) [ "+" ]
+    @{Subject}Boolean(this::sub) [ "-" ]
+    @{Subject}Boolean(this::mul) [ "*" ]
+    @{Subject}Boolean(this::div) [ "/" ]
+  ]
+  #patterns = [
+    #nnnnooo,
+    #nnnoono,
+    #nnnonoo,
+    #nnonnoo,
+    #nnonono,
+  ]
+  for #p patterns
+    for #ds words(digits)
+      for #os words(operators, 3, true)
+        if rpnEval(p, ds, os) == 24f
+          print("Found solution for digits " + digits:eachIn:eachInt:toString(", ", " and "))
+          pln(": " + encodeSolution(p, ds, os))
+          return 
+        <
+      <
+    <
+  <
+  pln("There is no solution for digits " + digits:eachIn:eachInt:toString(", ", " and "))
+<
+
+@float rpnEval(Subject pattern, Series digits, Series operators)
+  #dc = digits.cascade()
+  #oc = operators.cascade()
+  #es = []
+  for #cp codePoints(pattern:asString)
+    switch cp:asInt
+      case 'n', es.add(dc:next:in:raw)
+      case 'o', @{Subject}Boolean(oc:next:one):(es)
+      rest, throw new RuntimeException()
+    <
+  <
+  return es:in:asFloat
+<
+
+@boolean sum(Subject es) return eval(es, @(n1, n2) n2 + n1) <
+@boolean sub(Subject es) return eval(es, @(n1, n2) n2 - n1) <
+@boolean mul(Subject es) return eval(es, @(n1, n2) n2 * n1) <
+@boolean div(Subject es) return eval(es, @(n1, n2) n2 / n1) <
+
+@boolean eval(Subject es, {Float, Float}Float ae)
+  if es.size() < 2, return false
+  #n1 = es:take(es:last:raw):in:asFloat
+  #n2 = es:take(es:last:raw):in:asFloat
+  es.add(ae:(n1, n2))
+  return true
+<
+
+@String encodeSolution(Subject pattern, Series digits, Series operators)
+  #dc = digits.cascade()
+  #oc = operators.cascade()
+  #sb = new StringBuilder()
+  for #cp codePoints(pattern:asString)
+    switch cp:asInt
+      case 'n', sb.append(dc:next:in:asInt)
+      case 'o', sb.append(oc:next:in:asString)
+      rest, throw new RuntimeException()
+    <
+  <
+  return sb.toString()
+<
+
+@void solveRandom()
+  #digits = range(1, 9).set()
+  #pickedDigits = random(digits, true).first(4):eachOut:set()
+  pln("Random digits are " + pickedDigits:eachIn:eachInt:toString(", ", " and "))
+  solve(pickedDigits)
+<
+
+#cmd = ""
+while !"exit".equals(cmd)
+  cmd = rln("24 game solver> ")
+  switch cmd
+    case "exit" <
+    case "help" | "?", pln("
+      help, ? - shows help\n
+      exit - closes program\n
+      random - solves random 24 game\n
+      > 4 digits are interpreted as 24 game input and solved")
+    case "random", solveRandom()
+    rest
+      if cmd.matches("[1-9]{4}")
+        solve(codePoints(cmd).convert(@(i) #[[i:asInt - '1' + 1]]):set)
+      < else pln("Invalid command '#cmd'")
+    <
+  <
+<

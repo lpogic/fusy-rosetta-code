@@ -1,0 +1,5 @@
+#input = rln("A+B> ")
+#ints = input.split(" ")
+#A = Integer.parseInt(ints{0})
+#B = Integer.parseInt(ints{1})
+pln(A + B)

@@ -1,0 +1,38 @@
+@import java.util.TimerTask
+@import java.util.Timer
+
+@class Integrator
+  @float value = 0
+  @float lastSample = 0
+  @long lastSampleTime = 0
+  @Timer timer = new Timer()
+  @{Float}Float function = @(t) 0f
+
+  @void input({Float}Float function) sync this, this.function = function <
+  @float output() sync this, return value <
+  @void run(long samplingPeriodMs)
+    #timerTask = new TimerTask() extends
+      @long runTime = time()
+      @+void run()
+         #sampleTime = time()
+         sync this
+           #sample = function:(@float(sampleTime - runTime))
+           value += ((lastSample + sample) * (sampleTime - lastSampleTime)) / 2
+           lastSample = sample
+         <
+         lastSampleTime = sampleTime
+      <
+    <
+    timer.scheduleAtFixedRate(timerTask, samplingPeriodMs, samplingPeriodMs)
+  <
+  @void stop() timer:cancel <
+<
+
+#integrator = new Integrator()
+integrator.run(1)
+integrator.input(@(t) @float(Math.sin(Math.PI * t)))
+hold(2000)
+integrator.input(@(t) 0f)
+hold(500)
+pln("Output #[ integrator:output ]")
+integrator:stop

@@ -1,0 +1,37 @@
+#commandTable = "
+  Add ALTer  BAckup Bottom  CAppend Change SCHANGE  CInsert CLAst COMPress COpy\n
+  COUnt COVerlay CURsor DELete CDelete Down DUPlicate Xedit EXPand EXTract Find\n
+  NFind NFINDUp NFUp CFind FINdup FUp FOrward GET Help HEXType Input POWerinput\n
+  Join SPlit SPLTJOIN  LOAD  Locate CLocate  LOWercase UPPercase  LPrefix MACRO\n
+  MErge MODify MOve MSG Next Overlay PARSE PREServe PURge PUT PUTD  Query  QUIT\n
+  READ  RECover REFRESH RENum REPeat  Replace CReplace  RESet  RESTore  RGTLEFT\n
+  RIght LEft  SAVE  SET SHift SI  SORT  SOS  STAck STATus  TOP TRAnsfer Type Up
+"
+
+@void addCmd(Subject commands, String cmd)
+  #sb = new StringBuilder()
+  for #cp codePoints(cmd).eachInt()
+    if cp >= 'A' && cp <= 'Z', sb.appendCodePoint(cp)
+    else break
+  <
+  commands[sb:toString[cmd:toUpperCase]]
+<
+
+@String decodeCmd(Subject commands, String abbreviation)
+  #a = abbreviation.toUpperCase()
+  for #i range(abbreviation:length, 0)
+    #c = commands:[a.substring(0, i)]
+    if c.present()
+      #cmd = c.asString()
+      if cmd.startsWith(a), return cmd
+    <
+  <
+  return "*error*"
+<
+
+#commands = []
+for #cmd split(commandTable, "\\s"):select(@(s) !s:isBlank), addCmd(commands, cmd)
+
+#input = rln("Abbreviations, easy> ")
+for #cmd split(input, "\\s"):select(@(s) !s:isBlank), print(decodeCmd(commands, cmd) + " ")
+pln()

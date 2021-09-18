@@ -1,0 +1,17 @@
+@{Number}Number foo(Number initValue)
+  return new FusyFun1<>() extends
+    -Number acc = initValue
+
+    +Number apply(Number n)
+      if acc instanceof Integer && n instanceof Integer, return acc = acc:intValue + n:intValue
+      return acc = acc:floatValue + n:floatValue
+    <
+  <
+<
+
+#x = foo(1)
+#v = x:(5)
+pln("#v of #[v:getClass]")
+foo(3)
+v = x:(2.3)
+pln("#v of #[v:getClass]")

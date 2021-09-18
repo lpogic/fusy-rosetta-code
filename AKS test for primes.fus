@@ -1,0 +1,40 @@
+@Subject cooeficients(long p)
+  if p < 1, return [[1]]
+  #result = [[1;1]]
+  for #q steps(0, @int(p)-1)
+    #nextResult = [[1]]
+    #cascade = result:eachIn:eachLong:cascade
+    #last = cascade:next
+    for #c cascade
+      nextResult:add(last + c)
+      last = c
+    <
+    result = nextResult
+    result:add(1)
+  <
+  return result
+<
+
+@String cooeficientsStr(Subject cs) 
+  #sb = new StringBuilder()
+  for #c cs:eachIn:eachInt, sb:append(c):append(" ")
+  return sb:toString
+<
+
+pln("Cooeficients of (x - 1)^p")
+for #p range(0, 7)
+  pln(" for p = #p: #[cooeficientsStr(cooeficients(p))]")
+<
+
+@boolean isPrime(int p)
+  for #c cooeficients(p):eachIn:eachLong
+    if c != 1 && c % p != 0, return false
+  <
+  return true
+<
+
+pln()
+pln("Primes under 50")
+for #p range(1, 50)
+  if isPrime(p), pln(p)
+<

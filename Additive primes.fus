@@ -1,0 +1,18 @@
+@boolean isPrime(int n)
+  if n < 2, return false
+  #sqrt = @int(Math.sqrt(n))
+  for #i range(2, sqrt), if n % i == 0, return false
+  return true
+<
+
+@int digitsSum(int n)
+  #sum = 0
+  while n > 0
+    sum += n % 10
+    n /= 10
+  <
+  return sum
+<
+
+pln("Additive primes less than 500:")
+for #n steps(1):first(500), if isPrime(n) && isPrime(digitsSum(n)), pln(n)

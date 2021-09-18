@@ -1,0 +1,59 @@
+@long properDividorsSum(long n)
+  if n < 2, return 0
+  if n < 4, return 1
+  #dividorsSum = 1L
+  #root = Math.sqrt(n)
+  for #i range(2L, @long(root)), if n % i == 0
+    dividorsSum += i
+    if i < root, dividorsSum += n / i
+  <
+  return dividorsSum
+<
+
+@long nonTerminatingTreshold = 140_737_488_355_328L
+
+@Subject aliquotSequence(long n)
+  #as = [n]
+  for #s steps()
+    n = properDividorsSum(n)
+    if n == 0, as[n] \ break
+    if as:present(n) || n > nonTerminatingTreshold || as:size > 15, as#last[n] \ break
+    as[n]
+  <
+  return as
+<
+
+@void printAliquotSequence(Subject as)
+  for #t as
+    if "last":equals(t:raw), print("#[t:in:raw], ...") \ return
+    print("#[t:raw]#[t:asLong == 0 ? "" !! ", "]")
+  <
+<
+
+@String classifyAliquotSequence(Subject as)
+  if as:absent("last"), return "terminate"
+  #last = as#last:asLong
+  if last > nonTerminatingTreshold || as:absent(last), return "non-terminating"
+  
+  if as:asLong == last
+    if as:size == 2, return "perfect"
+    if as:size == 3, return "amicable"
+    return "sociable"
+  <
+  if as:reverse:select(1):asLong == last, return "aspiring"
+  return "cyclic"
+<
+
+@void printFor(long i)
+  #as = aliquotSequence(i)
+  print("#i: #[classifyAliquotSequence(as)]: ")
+  printAliquotSequence(as)
+  pln()
+<
+
+for #i range(1, 10L)
+  printFor(i)
+<
+for #i [1, 12, 28, 496, 220, 1184, 12496, 1264460, 790, 909, 562, 1064, 1488, 15355717786080L]:eachLong
+  printFor(i)
+<

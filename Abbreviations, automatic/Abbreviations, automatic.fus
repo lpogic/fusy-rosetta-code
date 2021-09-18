@@ -1,0 +1,21 @@
+@int minAbbreviation(Subject tokens)
+  OUTER!! for #l range(1, 100)
+    #set = []
+    for #t tokens:eachString
+      if t.length() >= l
+        #st = t.substring(0, l)
+        if set.present(st), continue OUTER
+        set.set(st)
+      <
+    <
+    return l
+  <
+  return -1
+<
+
+#file = new File("week-days.txt")
+
+for #l lines(file)
+  #spl = split(l, " "):select(@(s) !s:isBlank):set
+  pln(spl:size > 0 ? minAbbreviation(spl) + " " + l !! "")
+<

@@ -1,0 +1,43 @@
+#commandTable = "
+  add 1  alter 3  backup 2  bottom 1  Cappend 2  change 1  Schange  Cinsert 2  Clast 3\n
+  compress 4 copy 2 count 3 Coverlay 3 cursor 3  delete 3 Cdelete 2  down 1  duplicate\n
+  3 xEdit 1 expand 3 extract 3  find 1 Nfind 2 Nfindup 6 NfUP 3 Cfind 2 findUP 3 fUP 2\n
+  forward 2  get  help 1 hexType 4  input 1 powerInput 3  join 1 split 2 spltJOIN load\n
+  locate 1 Clocate 2 lowerCase 3 upperCase 3 Lprefix 2  macro  merge 2 modify 3 move 2\n
+  msg  next 1 overlay 1 parse preserve 4 purge 3 put putD query 1 quit  read recover 3\n
+  refresh renum 3 repeat 3 replace 1 Creplace 2 reset 3 restore 4 rgtLEFT right 2 left\n
+  2  save  set  shift 2  si  sort  sos  stack 3 status 4 top  transfer 3  type 1  up 1\n
+"
+
+@String decodeCmd(Subject commands, String abbreviation)
+  #a = abbreviation.toUpperCase()
+  for #i range(abbreviation:length, 0)
+    #c = commands:[a.substring(0, i)]
+    if c.present()
+      #cmd = c.asString()
+      if cmd.startsWith(a), return cmd
+    <
+  <
+  return "*error*"
+<
+
+#commands = []
+#csc = split(commandTable, "\\s"):select(@(s) !s:isBlank).cascade()
+for #cmd csc
+  cmd = cmd:toUpperCase
+  if csc.hasNext()
+    #n = csc.next()
+    if n.matches("\\d+")
+      commands.put(cmd.substring(0, Integer.parseInt(n)), cmd)
+    < else
+      csc.pushNext(n)
+      commands.put(cmd, cmd)
+    <
+  < else
+    commands.put(cmd, cmd)
+  <
+<
+
+#input = rln("Abbreviations, simple> ")
+for #cmd split(input, "\\s"):select(@(s) !s:isBlank), print(decodeCmd(commands, cmd) + " ")
+pln()

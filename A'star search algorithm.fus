@@ -1,0 +1,107 @@
+@record Crd(int x, int y)
+  @*int distance(Crd c1, Crd c2) return Math.abs(c1:x - c2:x) + Math.abs(c1:y - c2:y) <
+<
+
+@class Board
+  @int s
+  @Subject barriers
+ 
+  @new Board(int size, Subject barriers)
+    this.s = size - 1
+    this.barriers = barriers
+  <
+ 
+  @Subject moveOptions(Crd crd)
+    #options = []
+    if crd.y() > 0, options.set(new Crd(crd:x, crd:y - 1))
+    if crd.y() < s, options.set(new Crd(crd:x, crd:y + 1))
+    if crd.x() > 0
+      options.set(new Crd(crd:x - 1, crd:y))
+      if crd.y() > 0, options.set(new Crd(crd:x - 1, crd:y - 1))
+      if crd.y() < s, options.set(new Crd(crd:x - 1, crd:y + 1))
+    <
+    if crd.x() < s
+      options.set(new Crd(crd:x + 1, crd:y))
+      if crd.y() > 0, options.set(new Crd(crd:x + 1, crd:y - 1))
+      if crd.y() < s, options.set(new Crd(crd:x + 1, crd:y + 1))
+    <
+    return options
+  <
+
+  @int moveCost(Crd crd) return barriers.present(crd) ? 100 !! 1 <
+
+  @void show()
+    for #i range(0, s)
+      for #j range(0, s)
+        print(barriers.present(new Crd(j, i)) ? "B " : "O ")
+      <
+      pln("")
+    <
+  <
+< 
+
+#board = new Board(8, [
+  new Crd(2, 4),   
+  new Crd(2, 5),
+  new Crd(2, 6),
+  new Crd(3, 6),
+  new Crd(4, 6),
+  new Crd(5, 6),
+  new Crd(5, 5),
+  new Crd(5, 4),
+  new Crd(5, 3),
+  new Crd(5, 2),
+  new Crd(4, 2),
+  new Crd(3, 2),
+])
+board.show()
+#startCrd = new Crd(0, 0)
+#endCrd = new Crd(7, 7)
+
+@class Path
+  @Path base
+  @Crd extension
+  @int cost
+
+  @new Path(Crd crd)
+    base = null
+    extension = crd
+    cost = 0
+  <
+
+  @new Path(Path base, Crd crd, int stepCost)
+    this.base = base
+    extension = crd
+    cost = base.cost + stepCost
+  <
+<
+
+#paths = [ startCrd [ new Path(startCrd) ] ]
+#heuristic = @{Crd, Crd}Integer(Crd::distance)
+
+while true
+  #p = @Path(paths.take(min(paths, 
+    @(p1, p2)
+      #pa1 = @Path(p1:in:one)
+      #pa2 = @Path(p2:in:one)
+      #h1 = pa1.cost + heuristic:(pa1.extension, endCrd)
+      #h2 = pa2.cost + heuristic:(pa2.extension, endCrd)
+      return h1 - h2
+    <
+  ):raw):in:one)
+  for #move board.moveOptions(p.extension).eachAs(@Crd)
+    if paths.absent(move)
+      #newPath = new Path(p, move, board.moveCost(move))
+      if move.equals(endCrd)
+        printPath(newPath)
+        return
+      <
+      paths.put(move, newPath)
+    <
+  <
+<
+
+@void printPath(Path path)
+  if path.base != null, printPath(path.base)
+  pln(path.extension)
+<

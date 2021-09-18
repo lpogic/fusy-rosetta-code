@@ -1,0 +1,97 @@
+@class fifteenSolver
+  -int{} Nr = new int{;3,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3}
+  -int{} Nc = new int{;3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2}
+  -int n
+  -int _n = 0
+  -int{} N0 = new int{100}
+  -int{} N3 = new int{100}
+  -int{} N4 = new int{100}
+  -long{} N2 = new long{100}
+
+  @boolean fY()
+    if N4{n} < _n, return fN()
+    if N2{n} == 0x123456789abcdef0L
+      print("Solution found in #n moves: ")
+      for #g range(1, n), print(@char(N3{g}))
+      println()
+      return true
+    <
+    if N4{n} == _n, return fN()
+    return false
+  <
+
+  @boolean fN()
+    if N3{n} != 'u' && N0{n} / 4 < 3
+      fI()
+      ++n
+      if fY(), return true
+      --n
+    <
+    if N3{n} != 'd' && N0{n} / 4 > 0
+      fG()
+      ++n
+      if fY(), return true
+      --n
+    <
+    if N3{n} != 'l' && N0{n} % 4 < 3
+      fE()
+      ++n
+      if fY(), return true
+      --n
+    <
+    if N3{n} != 'r' && N0{n} % 4 > 0
+      fL()
+      ++n
+      if fY(), return true
+      --n
+    <
+    return false
+  <
+
+  @void fI()
+    int g = (11 - N0{n}) * 4
+    long a = N2{n} & (@long(15) << g)
+    N0{n + 1} = N0{n} + 4
+    N2{n + 1} = N2{n} - a + (a << 16)
+    N3{n + 1} = 'd'
+    N4{n + 1} = N4{n} + (Nr{@int(a >>> g)} <= N0{n} / 4 ? 0 !! 1)
+  <
+
+  @void fG()
+    int g = (19 - N0{n}) * 4
+    long a = N2{n} & (@long(15) << g)
+    N0{n + 1} = N0{n} - 4
+    N2{n + 1} = N2{n} - a + (a >>> 16)
+    N3{n + 1} = 'u'
+    N4{n + 1} = N4{n} + (Nr{@int(a >>> g)} >= N0{n} / 4 ? 0 !! 1)
+  <
+
+  @void fE()
+    int g = (14 - N0{n}) * 4
+    long a = N2{n} & (@long(15) << g)
+    N0{n + 1} = N0{n} + 1
+    N2{n + 1} = N2{n} - a + (a << 4)
+    N3{n + 1} = 'r'
+    N4{n + 1} = N4{n} + (Nc{@int(a >>> g)} <= N0{n} % 4 ? 0 !! 1)
+  <
+
+  @void fL()
+    int g = (16 - N0{n}) * 4
+    long a = N2{n} & (@long(15) << g)
+    N0{n + 1} = N0{n} - 1
+    N2{n + 1} = N2{n} - a + (a >>> 4)
+    N3{n + 1} = 'l'
+    N4{n + 1} = N4{n} + (Nc{@int(a >>> g)} >= N0{n} % 4 ? 0 !! 1)
+  <
+
+  @new fifteenSolver(int n, long g)
+    N0{0} = n
+    N2{0} = g
+  <
+ 
+  @void Solve() while !fY(), ++_n <
+<
+
+#solver = new fifteenSolver(8,0xfe169b4c0a73d852L)
+solver.Solve()
+\\rrrulddluuuldrurdddrullulurrrddldluurddlulurruldrdrd

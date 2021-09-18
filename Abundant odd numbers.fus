@@ -1,0 +1,46 @@
+@int sigmaSum(int n)
+  if n < 2, return n
+  else if n < 4, return n + 1
+  #sigmaSum = n + 1
+  #root = @int(Math.sqrt(n))
+  for #i range(2, root), if 0 == (n % i)
+    sigmaSum += i
+    if i < root, sigmaSum += n / i
+  <
+  return sigmaSum
+<
+
+@Series abundantOdd(int since)
+  return Series.pull(new Expression() extends
+    @int last = (since % 2) == 0 ? since - 1 !! since - 2
+
+    +Subject play()
+      while true
+        last += 2
+        #ss = sigmaSum(last)
+        if ss > last * 2, return [ last [ ss ] ]
+      <
+    <
+  <)
+<
+
+@void first25()
+  for #n abundantOdd(1).first(25), pln("#[n:asInt], sigma sum: #[n:in:asInt]")
+<
+
+@void tousandth()
+  #n = abundantOdd(1).select(999)
+  pln("#[n:asInt], sigma sum: #[n:in:asInt]")
+<
+
+@void billioner()
+  #n = abundantOdd(1_000_000_000).first()
+  pln("#[n:asInt], sigma sum: #[n:in:asInt]")
+<
+
+pln("The first 25 abundant odd numbers are:")
+first25()
+pln("The one thousandth abundant odd number is:")
+tousandth()
+pln("The first abundant odd number above one billion is:")
+billioner()

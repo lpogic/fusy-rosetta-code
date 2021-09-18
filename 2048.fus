@@ -1,0 +1,157 @@
+@class Game2048
+  @Subject board
+  @Subject availableMoves
+
+  @enum Move
+    UP(   @(i, j) i + j * 4)
+    DOWN( @(i, j) 15 - i - j * 4)
+    LEFT( @(i, j) i * 4 + j)
+    RIGHT(@(i, j) 15 - i * 4 - j)
+  >
+    @{Integer, Integer}Integer indexFun
+
+    @new Move({Integer, Integer}Integer indexFun)
+      this.indexFun = indexFun
+    <
+  <
+
+  @new Game2048()
+    board = Series.pull(@() [0]).index(range(0, 15)).set()
+  <
+
+  @Subject freeSlots()
+    return board.select(@(s) s:in:asInt == 0).set()
+  <
+
+  @boolean win()
+    return board.select(@(s) s:in:asInt == 2048).present()
+  <
+
+  @boolean loose()
+    return freeSlots().absent() && availableMoves().absent()
+  <
+
+  @void spawn()
+    #spawn = random(freeSlots())
+    #value = random(0.1) ? 4 !! 2
+    board.in(spawn:raw).reset(value)
+    invalidateAvailableMoves()
+  <
+
+  @void invalidateAvailableMoves()
+    availableMoves = null
+  <
+
+  @Subject availableMoves()
+    if availableMoves != null, return availableMoves
+    #am = []
+    if testMove(Move.UP), am.set(Move.UP)
+    if testMove(Move.DOWN), am.set(Move.DOWN)
+    if testMove(Move.LEFT), am.set(Move.LEFT)
+    if testMove(Move.RIGHT), am.set(Move.RIGHT)
+    return availableMoves = am
+  <
+
+  @boolean testMove(Move move)
+    for #i range(0, 3)
+      #l = -1
+      for #j range(0, 3)
+        #c = board.in(move.indexFun:(i, j)).asInt()
+        if l == 0
+          if c != 0, return true
+        < else
+          if c == l, return true
+        <
+        l = c
+      <
+    <
+    return false
+  <
+
+  @Subject moveOne(Subject slots)
+    if slots.absent(), return slots
+    #a_ = slots.take(slots:raw)
+    #a = a_:in:asInt()
+    if a == 0, return moveOne(slots)
+    if slots.absent(), return a_
+    #b_ = slots.take(slots:raw)
+    #b = b_:in:asInt()
+    if b == 0, return moveOne(#.add(a).alter(slots))
+    if a == b, return #.add(a << 1).alter(moveOne(slots))
+    return #.add(a).alter(moveOne(#.add(b).alter(slots)))
+  <
+
+  @boolean move(Move move)
+    if availableMoves().absent(move), return false
+    for #i range(0, 3)
+      #s = []
+      for #j range(0, 3)
+        s.add(board.in(move.indexFun:(i, j)):raw)
+      <
+      #ssc = moveOne(s):eachIn:eachInt:cascade()
+      for #j range(0, 3)
+        board.in(move.indexFun:(i, j)).reset(ssc.nextOr(0))
+      <
+    <
+    invalidateAvailableMoves()
+    return true
+  <
+
+  @void draw()
+    for #y range(0, 3)
+      pln("+-------+-------+-------+-------+")
+      pln("|       |       |       |       |")
+      for #x range(0, 3)
+        #x1 = board.in(4 * y + x).asInt()
+        if x1 == 0, print("|       ")
+        elf x1 <= 10, print("|   #x1   ")
+        elf x1 <= 100, print("|  #x1   ")
+        elf x1 <= 1000, print("|  #x1  ")
+        elf, print("| #x1  ")
+      <
+      pln("|")
+      pln("|       |       |       |       |")
+    <
+    pln("+-------+-------+-------+-------+")
+  <
+<
+
+#cmdToMove = [
+  #w [ Game2048.Move.UP ]
+  #s [ Game2048.Move.DOWN ]
+  #a [ Game2048.Move.LEFT ]
+  #d [ Game2048.Move.RIGHT ]
+]
+
+#game = new Game2048()
+game.spawn()
+game.spawn()
+game.spawn()
+game.draw()
+#cmd = ""
+while !"exit".equals(cmd)
+  cmd = rln("2048> ")
+  switch cmd
+    case "help", pln("
+      help - shows help\n
+      draw - draws game state\n
+      w - move up\n
+      s - move down\n
+      a - move left\n
+      d - move right\n
+      exit - close this program")
+    case "draw", game.draw()
+    case "exit" <
+    rest
+      #m = cmdToMove.in(cmd).get()
+      if m.present()
+        if game.move(m:one)
+          if game.win(), game.draw() \ pln("YOU WIN!") \ return
+          game.spawn()
+          game.draw()
+          if game.loose(), pln("YOU LOOSE!") \ return
+        < else pln("Move #[m.raw()] is not available")
+      < else pln("Invalid cmd '#cmd'. Type 'help' to list commands")
+    <
+  <
+<
