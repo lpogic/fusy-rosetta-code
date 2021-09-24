@@ -33,7 +33,7 @@
   @void show()
     for #i range(0, s)
       for #j range(0, s)
-        print(barriers.present(new Crd(j, i)) ? "B " : "O ")
+        print(barriers.present(new Crd(j, i)) ? "B " !! "O ")
       <
       pln("")
     <
@@ -81,7 +81,7 @@ board.show()
 
 while true
   #p = @Path(paths.take(min(paths, 
-    @(p1, p2)
+    $(p1, p2)
       #pa1 = @Path(p1:in:one)
       #pa2 = @Path(p2:in:one)
       #h1 = pa1.cost + heuristic:(pa1.extension, endCrd)

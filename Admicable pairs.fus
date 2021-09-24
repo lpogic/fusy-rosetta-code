@@ -1,0 +1,16 @@
+@long properDivisorsSum(long n)
+  if n < 2, return 0
+  #dividorsSum = 1L
+  #root = Math.sqrt(n)
+  for #i range(2L, @long(root)), if n % i == 0
+    dividorsSum += i
+    if i < root, dividorsSum += n / i
+  <
+  return dividorsSum
+<
+
+pln("Admicable pairs below 20000:")
+for #n steps():first(20_000)
+  #pds = properDivisorsSum(n)
+  if n < pds && properDivisorsSum(pds) == n, pln("#n and #pds")
+<

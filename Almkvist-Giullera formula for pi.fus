@@ -1,2 +1,43 @@
-@int agpiFormula(int n)
-  return 32 * 6 * n
+@import java.math.BigInteger
+@import java.math.BigDecimal
+@import java.math.MathContext
+@import java.math.RoundingMode
+
+@BigInteger big(int n) return BigInteger.valueOf(n) <
+@BigInteger add(BigInteger a, BigInteger b) return a.add(b) <
+@BigInteger mul(BigInteger a, BigInteger b) return a.multiply(b) <
+@BigInteger div(BigInteger a, BigInteger b) return a.divide(b) <
+@BigInteger fct(BigInteger f)
+  #one = BigInteger.ONE
+  return f.compareTo(one) == 1 ? f.multiply(fct(f.subtract(one))) !! one <
+@BigInteger pow(BigInteger b, int e) return b.pow(e) <
+
+@BigInteger b2p5 = pow(BigInteger.TWO, 5)
+@BigInteger b3 = big(3)
+@BigInteger b6 = big(6)
+@BigInteger b9 = big(9)
+@BigInteger b126 = big(126)
+@BigInteger b532 = big(532)
+
+@BigInteger integerPortion(int i)
+  #n = big(i)
+  #m1 = mul(b2p5, fct(mul(b6, n)))
+  #m2 = mul(m1, add(add(mul(b532, pow(n, 2)), mul(b126, n)), b9))
+  return div(m2, mul(b3, pow(fct(n), 6)))
+<
+
+for #i steps():first(10), pln("i = #i, integer portion: #{integerPortion(i)}")
+
+@BigDecimal pi70()
+  #mc = new MathContext(72, RoundingMode.HALF_UP)
+  #ppi = BigDecimal.ZERO
+  #minE = BigDecimal.TEN.pow(-70, mc)
+  for #i steps()
+    #e = new BigDecimal(integerPortion(i)).multiply(BigDecimal.TEN.pow(-6 * i - 3, new MathContext(6 * i + 3)))
+    ppi = ppi.add(e)
+    if e.compareTo(minE) < 0, return BigDecimal.ONE.divide(ppi.sqrt(mc), new MathContext(71, RoundingMode.HALF_DOWN))
+  <
+  drop "Unreachable"
+<
+
+pln("PI to 70 decimal digits of precision: #{pi70()}")

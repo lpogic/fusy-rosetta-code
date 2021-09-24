@@ -1,5 +1,5 @@
 @{Number}Number foo(Number initValue)
-  return new FusyFun1<>() extends
+  return extends {Number}Number()
     -Number acc = initValue
 
     +Number apply(Number n)
@@ -11,7 +11,7 @@
 
 #x = foo(1)
 #v = x:(5)
-pln("#v of #[v:getClass]")
+pln("#v of #{v:getClass}")
 foo(3)
 v = x:(2.3)
-pln("#v of #[v:getClass]")
+pln("#v of #{v:getClass}")

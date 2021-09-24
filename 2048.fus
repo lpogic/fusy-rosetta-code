@@ -3,10 +3,10 @@
   @Subject availableMoves
 
   @enum Move
-    UP(   @(i, j) i + j * 4)
-    DOWN( @(i, j) 15 - i - j * 4)
-    LEFT( @(i, j) i * 4 + j)
-    RIGHT(@(i, j) 15 - i * 4 - j)
+    UP(   $(i, j) i + j * 4)
+    DOWN( $(i, j) 15 - i - j * 4)
+    LEFT( $(i, j) i * 4 + j)
+    RIGHT($(i, j) 15 - i * 4 - j)
   >
     @{Integer, Integer}Integer indexFun
 
@@ -16,15 +16,15 @@
   <
 
   @new Game2048()
-    board = Series.pull(@() [0]).index(range(0, 15)).set()
+    board = Sequence.pull($() 0).index(range(0, 15)).set()
   <
 
   @Subject freeSlots()
-    return board.select(@(s) s:in:asInt == 0).set()
+    return board.select($(s) s:in:asInt == 0).set()
   <
 
   @boolean win()
-    return board.select(@(s) s:in:asInt == 2048).present()
+    return board.select($(s) s:in:asInt == 2048).present()
   <
 
   @boolean loose()
@@ -76,9 +76,9 @@
     if slots.absent(), return a_
     #b_ = slots.take(slots:raw)
     #b = b_:in:asInt()
-    if b == 0, return moveOne(#.add(a).alter(slots))
-    if a == b, return #.add(a << 1).alter(moveOne(slots))
-    return #.add(a).alter(moveOne(#.add(b).alter(slots)))
+    if b == 0, return moveOne([[a]] #= slots)
+    if a == b, return [[a << 1]] #= moveOne(slots)
+    return [[a]] #= moveOne([[b]] #= slots)
   <
 
   @boolean move(Move move)
@@ -117,10 +117,10 @@
 <
 
 #cmdToMove = [
-  #w [ Game2048.Move.UP ]
-  #s [ Game2048.Move.DOWN ]
-  #a [ Game2048.Move.LEFT ]
-  #d [ Game2048.Move.RIGHT ]
+  $w [ Game2048.Move.UP ]
+  $s [ Game2048.Move.DOWN ]
+  $a [ Game2048.Move.LEFT ]
+  $d [ Game2048.Move.RIGHT ]
 ]
 
 #game = new Game2048()
@@ -150,7 +150,7 @@ while !"exit".equals(cmd)
           game.spawn()
           game.draw()
           if game.loose(), pln("YOU LOOSE!") \ return
-        < else pln("Move #[m.raw()] is not available")
+        < else pln("Move #{m:raw} is not available")
       < else pln("Invalid cmd '#cmd'. Type 'help' to list commands")
     <
   <

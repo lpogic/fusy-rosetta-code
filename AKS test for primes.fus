@@ -1,7 +1,7 @@
 @Subject cooeficients(long p)
   if p < 1, return [[1]]
   #result = [[1;1]]
-  for #q steps(0, @int(p)-1)
+  for #q steps(0):first(@int(p)-1)
     #nextResult = [[1]]
     #cascade = result:eachIn:eachLong:cascade
     #last = cascade:next
@@ -23,7 +23,7 @@
 
 pln("Cooeficients of (x - 1)^p")
 for #p range(0, 7)
-  pln(" for p = #p: #[cooeficientsStr(cooeficients(p))]")
+  pln(" for p = #p: #{cooeficientsStr(cooeficients(p))}")
 <
 
 @boolean isPrime(int p)

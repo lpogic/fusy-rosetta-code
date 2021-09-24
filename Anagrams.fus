@@ -1,0 +1,23 @@
+@import java.net.*
+@import java.io.*
+
+try
+  #wordlist = new URL("http://wiki.puzzlers.org/pub/wordlists/unixdict.txt")
+  #in = new BufferedReader(new InputStreamReader(wordlist:openStream))
+  #inputLine@String
+  while (inputLine = in:readLine) != null, pln(inputLine)
+  in:close
+< catch #e <
+
+#url = "http://wiki.puzzlers.org/pub/wordlists/unixdict.txt"
+try #i inputUrl(url), for #l lines(i), pln(l)
+
+[
+
+  $ambi [ $b []]
+]
+
+${\s+}
+
+a$d$c
+

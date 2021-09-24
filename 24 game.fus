@@ -2,10 +2,10 @@
   return random(range(1, 9):set):asFloat
 <
 
-@boolean sum(Subject es) return eval(es, @(n1, n2) n2 + n1) <
-@boolean sub(Subject es) return eval(es, @(n1, n2) n2 - n1) <
-@boolean mul(Subject es) return eval(es, @(n1, n2) n2 * n1) <
-@boolean div(Subject es) return eval(es, @(n1, n2) n2 / n1) <
+@boolean sum(Subject es) return eval(es, $(n1, n2) n2 + n1) <
+@boolean sub(Subject es) return eval(es, $(n1, n2) n2 - n1) <
+@boolean mul(Subject es) return eval(es, $(n1, n2) n2 * n1) <
+@boolean div(Subject es) return eval(es, $(n1, n2) n2 / n1) <
 
 
 @boolean eval(Subject es, {Float, Float}Float ae)
@@ -18,7 +18,7 @@
 
 #choosenNumbers = random(range(1, 9):set, true).first(4):eachOut:set
 MAIN_LOOP!! while true
-  #numbers = #:copy(choosenNumbers)
+  #numbers = Suite:copy(choosenNumbers)
   pln("Choosen numbers are: "+ numbers:eachIn:eachInt:toString(", ", " and "))
   #expStack = []
   #cmd = rln("24 game> ")
@@ -31,9 +31,8 @@ MAIN_LOOP!! while true
       other symbols are interpreted as rpn expression and evaluated")
     case "reset", choosenNumbers = random(range(1, 9):set, true).first(4):eachOut:set
     rest
-      for #cps codePoints(cmd)
-        #cp = cps.asInt()
-        switch cp
+      for #cp letters(cmd)
+        switch cp:intValue
           case '+', if !sum(expStack), pln("Invalid RPN expression") \ continue MAIN_LOOP
           case '-', if !sub(expStack), pln("Invalid RPN expression") \ continue MAIN_LOOP
           case '*', if !mul(expStack), pln("Invalid RPN expression") \ continue MAIN_LOOP
@@ -41,12 +40,12 @@ MAIN_LOOP!! while true
           rest
             if cp >= '1' && cp <= '9'
               #n = cp - '1' + 1
-              #in = numbers.select(@(s) s:in:asInt == n).first()
+              #in = numbers.select($(s) s:in:asInt == n).first()
               if in.present()
                 numbers.unset(in:raw)
                 expStack.add(n)
-              < else pln("There is no more #[@char(cp)] to use") \ continue MAIN_LOOP
-            < else pln("Invalid input '#[@char(cp)]'") \ continue MAIN_LOOP
+              < else pln("There is no more #{@char(cp:intValue)} to use") \ continue MAIN_LOOP
+            < else pln("Invalid input '#{@char(cp:intValue)}'") \ continue MAIN_LOOP
           <
         <
       <

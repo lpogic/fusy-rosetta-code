@@ -1,4 +1,4 @@
-@long properDividorsSum(long n)
+@long properDivisorsSum(long n)
   if n < 2, return 0
   if n < 4, return 1
   #dividorsSum = 1L
@@ -15,24 +15,24 @@
 @Subject aliquotSequence(long n)
   #as = [n]
   for #s steps()
-    n = properDividorsSum(n)
-    if n == 0, as[n] \ break
-    if as:present(n) || n > nonTerminatingTreshold || as:size > 15, as#last[n] \ break
-    as[n]
+    n = properDivisorsSum(n)
+    if n == 0, as #= [n] \ break
+    if as:present(n) || n > nonTerminatingTreshold || as:size > 15, as:$last #= [n] \ break
+    as #= [n]
   <
   return as
 <
 
 @void printAliquotSequence(Subject as)
   for #t as
-    if "last":equals(t:raw), print("#[t:in:raw], ...") \ return
-    print("#[t:raw]#[t:asLong == 0 ? "" !! ", "]")
+    if "last":equals(t:raw), print("#{t:in:raw}, ...") \ return
+    print("#{t:raw}#{t:asLong == 0 ? "" !! ", "}")
   <
 <
 
 @String classifyAliquotSequence(Subject as)
   if as:absent("last"), return "terminate"
-  #last = as#last:asLong
+  #last = as:$last:asLong
   if last > nonTerminatingTreshold || as:absent(last), return "non-terminating"
   
   if as:asLong == last
@@ -46,7 +46,7 @@
 
 @void printFor(long i)
   #as = aliquotSequence(i)
-  print("#i: #[classifyAliquotSequence(as)]: ")
+  print("#i: #{classifyAliquotSequence(as)}: ")
   printAliquotSequence(as)
   pln()
 <

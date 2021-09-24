@@ -1,0 +1,47 @@
+@import java.util.Iterator
+
+@boolean isPrime(int n)
+  #sqrtn = @int(Math.sqrt(n))
+  for #i range(2, sqrtn), if n % i == 0, return false
+  return true
+<
+
+@Sequence<Integer> primes()
+  return $() extends Iterator<>()
+    @int last = 1
+    @+boolean hasNext() return true <
+    @+Integer next() while !isPrime(++last) <\ return last <
+  <
+<
+
+@boolean isAlmostPrime(int k, int n)
+  #pk = 0
+  for #p primes()
+    if p > n, break
+    while n % p == 0
+      n /= p
+      ++pk
+    <
+  <
+  return pk == k
+<
+
+@void printAlmostPrimes(int k, Subject almostPrimes)
+  print("Almost primes for k = #k: ")
+  #apc = almostPrimes:eachInt:cascade
+  for #ap apc
+     print(ap)
+     if apc:hasNext, print(", ")
+  <
+  pln()
+<
+
+for #k range(1, 5)
+  #almostPrimes = []
+  for #n steps(2)
+    if isAlmostPrime(k, n), almostPrimes #= [n]
+    if almostPrimes:size >= 10, break
+  <
+  printAlmostPrimes(k, almostPrimes)
+<
+    

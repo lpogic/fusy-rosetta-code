@@ -1,7 +1,6 @@
 @boolean isPrime(int n)
   if n < 2, return false
-  #sqrt = @int(Math.sqrt(n))
-  for #i range(2, sqrt), if n % i == 0, return false
+  for #i range(2, @int(Math.sqrt(n))), if n % i == 0, return false
   return true
 <
 

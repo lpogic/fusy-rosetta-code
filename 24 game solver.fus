@@ -1,16 +1,16 @@
 @void solve(Subject digits)
   #operators = [ 
-    @{Subject}Boolean(this::sum) [ "+" ]
-    @{Subject}Boolean(this::sub) [ "-" ]
-    @{Subject}Boolean(this::mul) [ "*" ]
-    @{Subject}Boolean(this::div) [ "/" ]
+    @{Subject}Boolean($::sum) [ "+" ]
+    @{Subject}Boolean($::sub) [ "-" ]
+    @{Subject}Boolean($::mul) [ "*" ]
+    @{Subject}Boolean($::div) [ "/" ]
   ]
   #patterns = [
-    #nnnnooo,
-    #nnnoono,
-    #nnnonoo,
-    #nnonnoo,
-    #nnonono,
+    $nnnnooo,
+    $nnnoono,
+    $nnnonoo,
+    $nnonnoo,
+    $nnonono,
   ]
   for #p patterns
     for #ds words(digits)
@@ -30,20 +30,19 @@
   #dc = digits.cascade()
   #oc = operators.cascade()
   #es = []
-  for #cp codePoints(pattern:asString)
-    switch cp:asInt
+  for #cp letters(pattern:asString)
+    switch cp:intValue
       case 'n', es.add(dc:next:in:raw)
       case 'o', @{Subject}Boolean(oc:next:one):(es)
-      rest, throw new RuntimeException()
     <
   <
   return es:in:asFloat
 <
 
-@boolean sum(Subject es) return eval(es, @(n1, n2) n2 + n1) <
-@boolean sub(Subject es) return eval(es, @(n1, n2) n2 - n1) <
-@boolean mul(Subject es) return eval(es, @(n1, n2) n2 * n1) <
-@boolean div(Subject es) return eval(es, @(n1, n2) n2 / n1) <
+@boolean sum(Subject es) return eval(es, $(n1, n2) n2 + n1) <
+@boolean sub(Subject es) return eval(es, $(n1, n2) n2 - n1) <
+@boolean mul(Subject es) return eval(es, $(n1, n2) n2 * n1) <
+@boolean div(Subject es) return eval(es, $(n1, n2) n2 / n1) <
 
 @boolean eval(Subject es, {Float, Float}Float ae)
   if es.size() < 2, return false
@@ -57,11 +56,10 @@
   #dc = digits.cascade()
   #oc = operators.cascade()
   #sb = new StringBuilder()
-  for #cp codePoints(pattern:asString)
-    switch cp:asInt
+  for #cp letters(pattern:asString)
+    switch cp:intValue
       case 'n', sb.append(dc:next:in:asInt)
       case 'o', sb.append(oc:next:in:asString)
-      rest, throw new RuntimeException()
     <
   <
   return sb.toString()
@@ -87,7 +85,7 @@ while !"exit".equals(cmd)
     case "random", solveRandom()
     rest
       if cmd.matches("[1-9]{4}")
-        solve(codePoints(cmd).convert(@(i) #[[i:asInt - '1' + 1]]):set)
+        solve(letters(cmd).convert($(i) i - '1' + 1):series:eachOut:set)
       < else pln("Invalid command '#cmd'")
     <
   <

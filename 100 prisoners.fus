@@ -37,5 +37,5 @@
 #n = 100_000
 #p = 100
 pln("\# of executions: #n")
-pln("Optimal play success rate: #[exec(n, p, this::playOptimal)]%")
-pln("Random play success rate: #[exec(n, p, this::playRandom)]%")
+pln("Optimal play success rate: #{exec(n, p, this::playOptimal)}%")
+pln("Random play success rate: #{exec(n, p, this::playRandom)}%")

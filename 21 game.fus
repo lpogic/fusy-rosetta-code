@@ -3,7 +3,7 @@
 <
 
 @class SAI implements AI
-  +int pick(int currentTotal)
+  @+int pick(int currentTotal)
     if currentTotal > 17, return 21 - currentTotal
     if currentTotal < 1, return 1
     return random([1, 2, 3]):asInt

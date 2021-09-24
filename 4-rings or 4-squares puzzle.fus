@@ -13,7 +13,7 @@
       print("Found solution: ")
       #ldc = ld:cascade
       for #ldi ldc
-        print("#[ldi:asChar] = #[ldi:in:asInt]")
+        print("#{ldi:asChar} = #{ldi:in:asInt}")
         if ldc:hasNext, print(", ")
       <
       pln()
@@ -25,12 +25,12 @@
 
 
 #nodes = [
-  @{Subject}Integer @(s) s:['a']:asInt + s:['b']:asInt,
-  @{Subject}Integer @(s) s:['b']:asInt + s:['c']:asInt + s:['d']:asInt,
-  @{Subject}Integer @(s) s:['d']:asInt + s:['e']:asInt + s:['f']:asInt,
-  @{Subject}Integer @(s) s:['f']:asInt + s:['g']:asInt,
+  @{Subject}Integer $(s) s:['a']:asInt + s:['b']:asInt,
+  @{Subject}Integer $(s) s:['b']:asInt + s:['c']:asInt + s:['d']:asInt,
+  @{Subject}Integer $(s) s:['d']:asInt + s:['e']:asInt + s:['f']:asInt,
+  @{Subject}Integer $(s) s:['f']:asInt + s:['g']:asInt,
 ]
-#letters = range(0, 6).each(@(i) @char('a' + i)):set
+#letters = range(0, 6).convert($(i) @char('a' + i)):set
 #digits = []
 
 pln("Looking for solutions for unique digits LOW=1  HIGH=7")

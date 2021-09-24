@@ -1,6 +1,5 @@
 @int P(int n)
   if n < 2, return 0
-  if n < 4, return 1
   #dividorsSum = 1
   #root = Math.sqrt(n)
   for #i range(2, @int(root)), if 0 == (n % i)
@@ -21,13 +20,13 @@
     elf, ++perfect
   <
   return [
-    #deficient [ deficient ]
-    #perfect [ perfect ]
-    #abundant [ abundant ]
+    $deficient [ deficient ]
+    $perfect [ perfect ]
+    $abundant [ abundant ]
   ]
 <
 
 #result = classify(1, 20_000)
-pln("deficient: #[result#deficient:asInt]")
-pln("perfect: #[result#perfect:asInt]")
-pln("abundant: #[result#abundant:asInt]")
+pln("deficient: #{result:$deficient:asInt}")
+pln("perfect: #{result:$perfect:asInt}")
+pln("abundant: #{result:$abundant:asInt}")

@@ -35,7 +35,7 @@
 
   @new Puzzle(Series puzzle)
     this.puzzle = puzzle.index(range(1, 16)):set
-    this.slot_position = puzzle:eachInt.indexOf(@(i) i == 16) + 1
+    this.slot_position = puzzle:eachInt.indexOf($(i) i == 16) + 1
   <
 
   @boolean move(Move move)
@@ -62,7 +62,7 @@
       for #x range(1, 4)
         #x1 = puzzle.in(4 * y + x):asInt 
         if x1 == 16, print("|   ")
-        else print("| #[x1 > 9 ? x1 !! x1 + " "]")
+        else print("| #{x1 > 9 ? x1 !! x1 + " "}")
 
       <
       pln("|")
@@ -74,15 +74,15 @@
 \\\\ UI \\\\
 
 #moveControl = [
-  #w [ Move.UP ]
-  #s [ Move.DOWN ]
-  #a [ Move.LEFT ]
-  #d [ Move.RIGHT ]
+  $w [ Move.UP ]
+  $s [ Move.DOWN ]
+  $a [ Move.LEFT ]
+  $d [ Move.RIGHT ]
 ]
 
 @void doMove(Puzzle puzzle, Subject movesCnt, Move move) 
  if !puzzle.move(move), pln("Invalid move #move!")
- movesCnt #= movesCnt:asInt + 1
+ movesCnt:reset(movesCnt:asInt + 1)
 <
 
 #puzzle = new Puzzle()
@@ -91,7 +91,7 @@ puzzle.shuffle(10)
 #cmd = ""
 while !"exit".equals(cmd)
   puzzle.draw()
-  if puzzle.solved(), pln("YOU WIN IN #[movesCnt:asInt] MOVES!") \ return
+  if puzzle.solved(), pln("YOU WIN IN #{movesCnt:asInt} MOVES!") \ return
   cmd = rln("15puzzle> ")
   switch cmd
     case "help", pln("
@@ -105,9 +105,8 @@ while !"exit".equals(cmd)
     case "exit" <
     case "bye", pln("Bye!") \ return
     rest, for #c cmd:split("")
-      #move = moveControl:[c]
-      if move:present, doMove(puzzle, movesCnt, move:one)
-      else pln("Invalid cmd #c")
+      if #move(moveControl:[c]):present, doMove(puzzle, movesCnt, move:one)
+      else pln("Invalid cmd `c`")
     <
   <
 <
