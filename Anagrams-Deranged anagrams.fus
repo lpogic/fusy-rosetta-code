@@ -1,0 +1,32 @@
+#wordlist = "http://wiki.puzzlers.org/pub/wordlists/unixdict.txt"
+#sets = []
+#longest = []
+#longestLength = 0
+try #i inputUrl(wordlist), for #l lines(i)
+  #ll = l:length
+  if ll > longestLength
+    #si = sets:in(normalize(l)):set
+    for #a si:eachString, if isDeranged(l, a)
+      longest:reset(l):set(a)
+      longestLength = ll
+    <
+    si:set(l)
+  <
+<
+longest:print
+      
+@String normalize(String str)
+  #sb = new StringBuilder()
+  for #l sort(letters(str)), sb:appendCodePoint(l)
+  return sb:toString
+<
+
+@boolean isDeranged(String a, String b)
+  #ca = letters(a):cascade
+  #cb = letters(b):cascade
+  for #s steps()
+    if !ca:hasNext || !cb:hasNext, return true
+    if ca:next:intValue == cb:next:intValue, return false
+  <
+  drop 0
+<
