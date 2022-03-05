@@ -8,23 +8,23 @@
 @import org.apache.directory.ldap.client.api.LdapNetworkConnection
  
 
-try #conn = new LdapNetworkConnection("localhost", 11389)
+try #conn new LdapNetworkConnection("localhost", 11389)
   conn.bind("uid=admin,ou=system", "********")
   search(conn, "*mil*")
-  conn.unBind()
+  conn:unBind
 <
 
-@void search(LdapConnection connection, String uid) throws LdapException, CursorException
+@!void search(LdapConnection connection, String uid)
   #baseDn = "ou=users,o=mojo"
   #filter = "(&(objectClass=person)(&(uid=#uid)))"
   #scope = SearchScope.SUBTREE
-  #attributes = new String{;"dn", "cn", "sn", "uid"}
+  #attributes = new ()String{"dn", "cn", "sn", "uid"}
   #ksearch = 0
 
   #cursor = connection.search(baseDn, filter, scope, attributes)
-  while cursor.next()
+  while cursor:next
     ksearch++
-    #entry = cursor.get()
-    pln("Search entry #ksearch = #entry")
+    #entry = cursor:get
+    out:println("Search entry #ksearch = #entry")
   <
 <

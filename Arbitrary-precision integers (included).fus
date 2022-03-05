@@ -1,0 +1,7 @@
+@case bm \ import{ BigMath } <
+
+#value = bm:int(5):pow(bm:int(4):pow(bm:int(3):pow(2):int):int)
+#digits = value:toString
+#length = digits:length
+io:println("5^(4^(3^2)) = {digits:substring(0, 20)}...{digits:substring(length - 20)}
+  ({length} digits)")

@@ -1,0 +1,5 @@
+#a = new String{ "apple", "orange" }
+#length = a.length
+
+io:println("{Arrays:toString(a)} length: {length}")
+

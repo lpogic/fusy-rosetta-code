@@ -1,0 +1,26 @@
+@int dividors(int n)
+  if n < 3, return n
+  #dividors = 2
+  #root = Math:sqrt(n)
+  for #i range(2, @int(root)), if 0 == (n % i)
+    ++dividors
+    if i < root, ++dividors
+  <
+  return dividors
+<
+
+@Sequence<Integer> antiPrimes()
+  return pull(extends {}Integer()
+    @int last = 0
+    @int maxDivs = 0
+
+    @Integer apply()
+      #divs = dividors(++last)
+      while maxDivs >= divs, divs = dividors(++last)
+      maxDivs = divs
+      return last
+    <
+  )
+<
+
+for #d antiPrimes():first(20), io:println(d)

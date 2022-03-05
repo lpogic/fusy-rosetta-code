@@ -1,0 +1,23 @@
+@case bm \ import{ BigMath } <
+
+@BigDecimal pi(int precision)
+  #mc = bm:ctx(precision + 3)
+  #mcc = bm:ctx(precision)
+  #d2 = bm:dec(2)
+  #a = bm:d1
+  #a1 = bm:d0
+  #g = bm:d1:divide(d2:sqrt(mc), mc)
+  #g1 = bm:d0
+  #sum = bm:d0
+  for #k steps(2)
+    if a:round(mcc):compareTo(g:round(mcc)) == 0, break
+    a1 = a:add(g):divide(d2, mc)
+    g1 = a:multiply(g):sqrt(mc)
+    a = a1
+    g = g1
+    sum = sum:add(a:multiply(a):subtract(g:multiply(g)):multiply(d2:pow(k)))
+  <
+  return bm:dec(4):multiply(a:multiply(a)):divide(bm:d1:subtract(sum), mc):round(mcc)
+<
+
+io:println(pi(100))

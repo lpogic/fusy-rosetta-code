@@ -1,19 +1,19 @@
 @class fifteenSolver
-  -int{} Nr = new int{;3,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3}
-  -int{} Nc = new int{;3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2}
-  -int n
-  -int _n = 0
-  -int{} N0 = new int{100}
-  -int{} N3 = new int{100}
-  -int{} N4 = new int{100}
-  -long{} N2 = new long{100}
+  @int{} Nr = new int{3,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3}
+  @int{} Nc = new int{3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2}
+  @int n
+  @int _n = 0
+  @int{} N0 = new (100)int
+  @int{} N3 = new (100)int
+  @int{} N4 = new (100)int
+  @long{} N2 = new (100)long
 
   @boolean fY()
     if N4{n} < _n, return fN()
     if N2{n} == 0x123456789abcdef0L
-      print("Solution found in #n moves: ")
-      for #g range(1, n), print(@char(N3{g}))
-      println()
+      out:print("Solution found in #n moves: ")
+      for #g range(1, n), out:print(@char(N3{g}))
+      out:println
       return true
     <
     if N4{n} == _n, return fN()

@@ -1,6 +1,6 @@
 @int solve(Subject letters, Subject digits, Subject sums, boolean allowRepetitions, boolean printResults)
   #solutionCnt = 0
-  DIGS!! for #d words(digits, letters:size, allowRepetitions)
+  pin DIGS for #d alg:words(digits, letters:size, allowRepetitions)
     #ld = d:eachIn.index(letters:each):set
     #cs = sums:cascade
     #si = @{Subject}Integer(cs:next:one)
@@ -10,13 +10,13 @@
       if si:(ld):intValue != sum, continue DIGS
     <
     if printResults
-      print("Found solution: ")
+      io:print("Found solution: ")
       #ldc = ld:cascade
       for #ldi ldc
-        print("#{ldi:asChar} = #{ldi:in:asInt}")
-        if ldc:hasNext, print(", ")
+        io:print("{ldi:one} = {ldi:in:one}")
+        if ldc:hasNext, io:print(", ")
       <
-      pln()
+      io:println("")
     <
     ++solutionCnt
   <
@@ -25,23 +25,25 @@
 
 
 #nodes = [
-  @{Subject}Integer $(s) s:['a']:asInt + s:['b']:asInt,
-  @{Subject}Integer $(s) s:['b']:asInt + s:['c']:asInt + s:['d']:asInt,
-  @{Subject}Integer $(s) s:['d']:asInt + s:['e']:asInt + s:['f']:asInt,
-  @{Subject}Integer $(s) s:['f']:asInt + s:['g']:asInt,
+  @{Subject}Integer({s}> s..a:int + s..b:int) []
+  @{Subject}Integer({s}> s..b:int + s..c:int + s..d:int) []
+  @{Subject}Integer({s}> s..d:int + s..e:int + s..f:int) []
+  @{Subject}Integer({s}> s..f:int + s..g:int) []
 ]
-#letters = range(0, 6).convert($(i) @char('a' + i)):set
+#letters = range(0, 6).convert({i}> string('a' + i)):set
 #digits = []
 
-pln("Looking for solutions for unique digits LOW=1  HIGH=7")
+io:println("Looking for solutions for unique digits LOW=1  HIGH=7")
 digits = range(1, 7):series:eachOut:set
 solve(letters, digits, nodes, false, true)
 
-pln("Looking for solutions for unique digits LOW=3  HIGH=9")
+io:println("Looking for solutions for unique digits LOW=3  HIGH=9")
 digits = range(3, 9):series:eachOut:set
 solve(letters, digits, nodes, false, true)
 
-\\>pln("Looking for solutions for digits LOW=0  HIGH=9")
+\\\
+io:println("Looking for solutions for digits LOW=0  HIGH=9")
 digits = range(0, 9):series:eachOut:set
 #result = solve(letters, digits, nodes, true, false)
-pln("Found #result solutions")<\\
+out:println("Found {result} solutions")
+\\\

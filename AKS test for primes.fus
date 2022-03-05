@@ -1,8 +1,8 @@
 @Subject cooeficients(long p)
-  if p < 1, return [[1]]
-  #result = [[1;1]]
+  if p < 1, return [ [1] ]
+  #result = [ [1] [1] ]
   for #q steps(0):first(@int(p)-1)
-    #nextResult = [[1]]
+    #nextResult = [ [1] ]
     #cascade = result:eachIn:eachLong:cascade
     #last = cascade:next
     for #c cascade
@@ -21,9 +21,9 @@
   return sb:toString
 <
 
-pln("Cooeficients of (x - 1)^p")
+io:println("Cooeficients of (x - 1)^p")
 for #p range(0, 7)
-  pln(" for p = #p: #{cooeficientsStr(cooeficients(p))}")
+  io:println(" for p = {p}: {cooeficientsStr(cooeficients(p))}")
 <
 
 @boolean isPrime(int p)
@@ -33,8 +33,8 @@ for #p range(0, 7)
   return true
 <
 
-pln()
-pln("Primes under 50")
-for #p range(1, 50)
-  if isPrime(p), pln(p)
+io:println
+io:println("Primes under 50")
+for #p range(2, 50)
+  if isPrime(p), io:println(p)
 <

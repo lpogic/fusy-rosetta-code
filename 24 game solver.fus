@@ -1,29 +1,29 @@
 @void solve(Subject digits)
   #operators = [ 
-    @{Subject}Boolean($::sum) [ "+" ]
-    @{Subject}Boolean($::sub) [ "-" ]
-    @{Subject}Boolean($::mul) [ "*" ]
-    @{Subject}Boolean($::div) [ "/" ]
+    @{Subject}Boolean(@::sum) [ "+" ]
+    @{Subject}Boolean(@::sub) [ "-" ]
+    @{Subject}Boolean(@::mul) [ "*" ]
+    @{Subject}Boolean(@::div) [ "/" ]
   ]
   #patterns = [
-    $nnnnooo,
-    $nnnoono,
-    $nnnonoo,
-    $nnonnoo,
-    $nnonono,
+    .nnnnooo []
+    .nnnoono []
+    .nnnonoo []
+    .nnonnoo []
+    .nnonono []
   ]
   for #p patterns
-    for #ds words(digits)
-      for #os words(operators, 3, true)
+    for #ds alg:words(digits)
+      for #os alg:words(operators, 3, true)
         if rpnEval(p, ds, os) == 24f
-          print("Found solution for digits " + digits:eachIn:eachInt:toString(", ", " and "))
-          pln(": " + encodeSolution(p, ds, os))
-          return 
+          io:print("Found solution for digits " + digits:eachIn:eachInt:string(", ", " and "))
+          io:println(": " + encodeSolution(p, ds, os))
+          return
         <
       <
     <
   <
-  pln("There is no solution for digits " + digits:eachIn:eachInt:toString(", ", " and "))
+  io:println("There is no solution for digits " + digits:eachIn:eachInt:string(", ", " and "))
 <
 
 @float rpnEval(Subject pattern, Series digits, Series operators)
@@ -31,23 +31,23 @@
   #oc = operators.cascade()
   #es = []
   for #cp letters(pattern:asString)
-    switch cp:intValue
+    switch cp:int
       case 'n', es.add(dc:next:in:raw)
       case 'o', @{Subject}Boolean(oc:next:one):(es)
     <
   <
-  return es:in:asFloat
+  return es:in:float
 <
 
-@boolean sum(Subject es) return eval(es, $(n1, n2) n2 + n1) <
-@boolean sub(Subject es) return eval(es, $(n1, n2) n2 - n1) <
-@boolean mul(Subject es) return eval(es, $(n1, n2) n2 * n1) <
-@boolean div(Subject es) return eval(es, $(n1, n2) n2 / n1) <
+@boolean sum(Subject es) > eval(es, {n1, n2}> n2 + n1) <
+@boolean sub(Subject es) > eval(es, {n1, n2}> n2 - n1) <
+@boolean mul(Subject es) > eval(es, {n1, n2}> n2 * n1) <
+@boolean div(Subject es) > eval(es, {n1, n2}> n2 / n1) <
 
 @boolean eval(Subject es, {Float, Float}Float ae)
-  if es.size() < 2, return false
-  #n1 = es:take(es:last:raw):in:asFloat
-  #n2 = es:take(es:last:raw):in:asFloat
+  if es:size < 2, return false
+  #n1 = es:take(es:last:raw):in:float
+  #n2 = es:take(es:last:raw):in:float
   es.add(ae:(n1, n2))
   return true
 <
@@ -57,36 +57,36 @@
   #oc = operators.cascade()
   #sb = new StringBuilder()
   for #cp letters(pattern:asString)
-    switch cp:intValue
-      case 'n', sb.append(dc:next:in:asInt)
+    switch cp:int
+      case 'n', sb.append(dc:next:in:int)
       case 'o', sb.append(oc:next:in:asString)
     <
   <
-  return sb.toString()
+  return sb:toString
 <
 
 @void solveRandom()
   #digits = range(1, 9).set()
-  #pickedDigits = random(digits, true).first(4):eachOut:set()
-  pln("Random digits are " + pickedDigits:eachIn:eachInt:toString(", ", " and "))
+  #pickedDigits = random(digits, true).first(4):eachOut:set
+  io:println("Random digits are " + pickedDigits:eachIn:eachInt:string(", ", " and "))
   solve(pickedDigits)
 <
 
 #cmd = ""
 while !"exit".equals(cmd)
-  cmd = rln("24 game solver> ")
+  cmd = io:readln("24 game solver> ")
   switch cmd
     case "exit" <
-    case "help" | "?", pln("
+    case "help" | "?", io:println("
       help, ? - shows help\n
       exit - closes program\n
       random - solves random 24 game\n
       > 4 digits are interpreted as 24 game input and solved")
     case "random", solveRandom()
     rest
-      if cmd.matches("[1-9]{4}")
-        solve(letters(cmd).convert($(i) i - '1' + 1):series:eachOut:set)
-      < else pln("Invalid command '#cmd'")
+      if cmd.matches(`[1-9]{4}`)
+        solve(letters(cmd).convert({i}> i - '1' + 1):series:eachOut:set)
+      < else io:println("Invalid command '{cmd}'")
     <
   <
 <

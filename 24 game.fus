@@ -1,30 +1,30 @@
 @float randomNumber()
-  return random(range(1, 9):set):asFloat
+  return random(range(1, 9):set):float
 <
 
-@boolean sum(Subject es) return eval(es, $(n1, n2) n2 + n1) <
-@boolean sub(Subject es) return eval(es, $(n1, n2) n2 - n1) <
-@boolean mul(Subject es) return eval(es, $(n1, n2) n2 * n1) <
-@boolean div(Subject es) return eval(es, $(n1, n2) n2 / n1) <
+@boolean sum(Subject es) return eval(es, {n1, n2}> n2 + n1) <
+@boolean sub(Subject es) return eval(es, {n1, n2}> n2 - n1) <
+@boolean mul(Subject es) return eval(es, {n1, n2}> n2 * n1) <
+@boolean div(Subject es) return eval(es, {n1, n2}> n2 / n1) <
 
 
 @boolean eval(Subject es, {Float, Float}Float ae)
-  if es.size() < 2, return false
-  #n1 = es.take(es:last:raw):in:asFloat
-  #n2 = es.take(es:last:raw):in:asFloat
+  if es:size < 2, return false
+  #n1 = es.take(es:last:raw):in:float
+  #n2 = es.take(es:last:raw):in:float
   es.add(ae:(n1, n2))
   return true
 <
 
 #choosenNumbers = random(range(1, 9):set, true).first(4):eachOut:set
-MAIN_LOOP!! while true
+pin MAIN_LOOP while true
   #numbers = Suite:copy(choosenNumbers)
-  pln("Choosen numbers are: "+ numbers:eachIn:eachInt:toString(", ", " and "))
+  io:println("Choosen numbers are: "+ numbers:eachIn:eachInt:string(", ", " and "))
   #expStack = []
-  #cmd = rln("24 game> ")
+  #cmd = io:readln("24 game> ")
   switch cmd
     case "exit", return
-    case "help" | "?", pln("
+    case "help" | "?", io:println("
       help, ? - shows help\n
       exit - closes program\n
       reset - resets choosen numbers\n
@@ -32,34 +32,34 @@ MAIN_LOOP!! while true
     case "reset", choosenNumbers = random(range(1, 9):set, true).first(4):eachOut:set
     rest
       for #cp letters(cmd)
-        switch cp:intValue
-          case '+', if !sum(expStack), pln("Invalid RPN expression") \ continue MAIN_LOOP
-          case '-', if !sub(expStack), pln("Invalid RPN expression") \ continue MAIN_LOOP
-          case '*', if !mul(expStack), pln("Invalid RPN expression") \ continue MAIN_LOOP
-          case '/', if !div(expStack), pln("Invalid RPN expression") \ continue MAIN_LOOP
+        switch cp:int
+          case '+', if !sum(expStack), io:println("Invalid RPN expression") \ continue MAIN_LOOP
+          case '-', if !sub(expStack), io:println("Invalid RPN expression") \ continue MAIN_LOOP
+          case '*', if !mul(expStack), io:println("Invalid RPN expression") \ continue MAIN_LOOP
+          case '/', if !div(expStack), io:println("Invalid RPN expression") \ continue MAIN_LOOP
           rest
             if cp >= '1' && cp <= '9'
               #n = cp - '1' + 1
-              #in = numbers.select($(s) s:in:asInt == n).first()
-              if in.present()
+              #in = numbers.select({s}> s:in:int == n):first
+              if in:present
                 numbers.unset(in:raw)
                 expStack.add(n)
-              < else pln("There is no more #{@char(cp:intValue)} to use") \ continue MAIN_LOOP
-            < else pln("Invalid input '#{@char(cp:intValue)}'") \ continue MAIN_LOOP
+              else io:println("There is no more {@char(cp:int)} to use") \ continue MAIN_LOOP
+            else io:println("Invalid input '{@char(cp:int)}'") \ continue MAIN_LOOP
           <
         <
       <
     <
   <
-  if numbers.present(), pln("Every choosen number must appear exactly one time")
+  if numbers:present, io:println("Every choosen number must appear exactly one time")
   else
-    if expStack.size() == 1
-      #result = expStack:in:asFloat
-      pln("Result is #result")
-      if result == 24, pln("YOU WIN!") \ return
-      else pln("YOU LOOSE") \ return
-    < else
-      pln("Invalid RPN expression")
+    if expStack:size == 1
+      #result = expStack:in:float
+      io:println("Result is {result}")
+      if result == 24, io:println("YOU WIN!") \ return \
+      else io:println("YOU LOOSE") \ return
+    else
+      io:println("Invalid RPN expression")
       continue MAIN_LOOP
     <
   <

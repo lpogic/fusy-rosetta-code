@@ -1,26 +1,24 @@
-@enum Move
+@enum Move(
   DOWN(-4, 1, 2, 3, 4)
   UP(+4, 13, 14, 15, 16)
   LEFT(+1, 4, 8, 12, 16)
   RIGHT(-1, 1, 5, 9, 13)
->
-  !*Subject options = Sequence.of(Move:values):set
+)
+  @static Subject options = Sequence.ofEntire(Move:values):set
 
-  -int offset
-  -Subject bannedMoves
+  @private int offset
+  @private Subject bannedMoves
 
-  -new Move(int offset, int b1, int b2, int b3, int b4)
+  @new Move(int offset, int b1, int b2, int b3, int b4)
     this.offset = offset
-    bannedMoves = [b1, b2, b3, b4]
+    bannedMoves = [ b1 [] b2 [] b3 [] b4 ]
   <
 
-  +boolean isAllowedForPosition(int position)
+  @boolean isAllowedForPosition(int position)
     return bannedMoves.absent(position) 
   <
 
-  +int offset()
-    return offset
-  <
+  @int offset() > offset <
 <
 
 @class Puzzle
@@ -35,7 +33,7 @@
 
   @new Puzzle(Series puzzle)
     this.puzzle = puzzle.index(range(1, 16)):set
-    this.slot_position = puzzle:eachInt.indexOf($(i) i == 16) + 1
+    this.slot_position = puzzle:eachInt.indexOf({i}> i == 16) + 1
   <
 
   @boolean move(Move move)
@@ -52,37 +50,37 @@
   <
 
   @boolean solved()
-    for #p puzzle, if p:asInt != p:in:asInt, return false
+    for #p puzzle, if p:int != p:in:int, return false
     return true
   < 
 
   @void draw()
     for #y range(0, 3)
-      pln("+---+---+---+---+")
+      io:println("+---+---+---+---+")
       for #x range(1, 4)
-        #x1 = puzzle.in(4 * y + x):asInt 
-        if x1 == 16, print("|   ")
-        else print("| #{x1 > 9 ? x1 !! x1 + " "}")
+        #x1 = puzzle.in(4 * y + x):int 
+        if x1 == 16, io:print("|   ")
+        else io:print("| " + (x1 > 9 ? x1 !! x1 + " "))
 
       <
-      pln("|")
+      io:println("|")
     <
-    pln("+---+---+---+---+")
+    io:println("+---+---+---+---+")
   <
 <
 
-\\\\ UI \\\\
+\\\ UI \\\
 
 #moveControl = [
-  $w [ Move.UP ]
-  $s [ Move.DOWN ]
-  $a [ Move.LEFT ]
-  $d [ Move.RIGHT ]
+  .w [ Move.UP ]
+  .s [ Move.DOWN ]
+  .a [ Move.LEFT ]
+  .d [ Move.RIGHT ]
 ]
 
 @void doMove(Puzzle puzzle, Subject movesCnt, Move move) 
- if !puzzle.move(move), pln("Invalid move #move!")
- movesCnt:reset(movesCnt:asInt + 1)
+ if !puzzle.move(move), io:println("Invalid move {move}!")
+ movesCnt:reset(movesCnt:int + 1)
 <
 
 #puzzle = new Puzzle()
@@ -91,22 +89,24 @@ puzzle.shuffle(10)
 #cmd = ""
 while !"exit".equals(cmd)
   puzzle.draw()
-  if puzzle.solved(), pln("YOU WIN IN #{movesCnt:asInt} MOVES!") \ return
-  cmd = rln("15puzzle> ")
+  if puzzle.solved(), io:println("YOU WIN IN {movesCnt:int} MOVES!") \ return
+  cmd = io:readln("15puzzle> ")
   switch cmd
-    case "help", pln("
+    case "help", io:println("
       help - shows help\n
+      exit - closes program\n
       w - move up\n
       s - move down\n
       a - move left\n
       d - move right\n
-      \\ moves can be mixed\n
-      exit - closes program")
+      \\\\ moves can be mixed
+    ")
     case "exit" <
-    case "bye", pln("Bye!") \ return
+    case "bye", io:println("Bye!") \ return
     rest, for #c cmd:split("")
-      if #move(moveControl:[c]):present, doMove(puzzle, movesCnt, move:one)
-      else pln("Invalid cmd `c`")
+      #move = moveControl:in(c):get
+      if move:present, doMove(puzzle, movesCnt, move:one)
+      else io:println("Invalid cmd {c}")
     <
   <
 <

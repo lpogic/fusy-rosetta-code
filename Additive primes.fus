@@ -13,5 +13,5 @@
   return sum
 <
 
-pln("Additive primes less than 500:")
-for #n steps(1):first(500), if isPrime(n) && isPrime(digitsSum(n)), pln(n)
+io:println("Additive primes less than 500:")
+for #n steps(1):first(500), if isPrime(n) && isPrime(digitsSum(n)), io:println(n)

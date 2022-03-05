@@ -1,3 +1,9 @@
-#doors = Sequence.pull($() false).index(range(1, 100)).set()
-for #i range(1, 100), for #d doors, if d:asInt % i == 0, d:in:reset(!d:in:asBool)
-for #d doors, if d:in:asBool, pln("Door #{d:asInt} is open")
+#doors = pull({}> false).index(range(1, 100)):set
+for #i range(1, 100)
+  for #d doors
+    if d:int % i == 0, d:in:reset(!d:in:boolean)
+  <
+<
+for #d doors
+  if d:in:boolean, io:println("Door {d:int} is open")
+<

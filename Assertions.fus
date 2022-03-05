@@ -1,0 +1,4 @@
+@build assert
+
+#a = 24
+assert a == 42 !! "Not 42"

@@ -1,0 +1,11 @@
+@int fibbonaci(int n)
+  if n < 0, drop "Invalid argument"
+  #f = []
+  f ## @{Integer}Integer({p}
+    return p < 2 ? p !! @{Integer}Integer(f:one):(p - 1) + @{Integer}Integer(f:one):(p - 2)
+  )
+  return @{Integer}Integer(f:one):(n)
+<
+io:println(fibbonaci(3))
+io:println(fibbonaci(5))
+io:println(fibbonaci(10))

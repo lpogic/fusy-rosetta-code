@@ -1,0 +1,139 @@
+@import java.util.Iterator
+@import java.util.List
+@import java.util.ArrayList
+
+@class IIR2 implements {Double}Double
+
+  @class Emiter implements {Long}Double
+    @double value
+
+    @void set(double value) this.value = value <    
+
+    @Double apply(Long sampleIndex) return value <
+  <
+
+  @class Delayer implements {Long}Double
+    @long si = sampleIndex
+    @{Long}Double input
+    @double value = 0.0
+    @double next = 0.0
+
+    @new Delayer({Long}Double input) this.input = input <
+
+    @Double apply(Long sampleIndex)
+      if si != sampleIndex
+        si = sampleIndex
+        value = next
+        next = input:(sampleIndex)
+      <
+      return value
+    <
+  <
+
+  @class Summator implements {Long}Double
+    @List<{Long}Double> inputs = new ArrayList<>()
+
+    @void add({Long}Double in) inputs:add(in) <
+
+    @Double apply(Long sampleIndex)
+      #n = 0.0
+      for #i inputs, n += i:(sampleIndex)
+      return n
+    <
+  <
+
+  @class Amplifier implements {Long}Double
+    @{Long}Double input
+    @double scale
+
+    @new Amplifier({Long}Double in, double scale)
+      this.input = in
+      this.scale = scale
+    <
+
+    @Double apply(Long sampleIndex) return input:(sampleIndex) * scale <
+  <
+
+  @Emiter input
+  @{Long}Double output
+  @long sampleIndex = 0
+
+  @new IIR2(Subject a, Subject b)
+    #ca = a:list:eachDouble:cascade
+    #cb = b:list:eachDouble:cascade
+    #co = new:Summator
+    input = new:Emiter
+    output = co
+    if cb:hasNext, co:add(new Amplifier(input, cb:next))
+    if ca:hasNext, ca:next
+    for #s steps()
+      if s > 0
+        if ca:hasNext, co:add(new Amplifier(output, -ca:next))
+        if cb:hasNext, co:add(new Amplifier(input, cb:next))
+      <
+      if ca:hasNext || cb:hasNext
+        #no = new:Summator
+        co.inputs:add(new Delayer(no))
+        co = no
+      else break
+    <
+  <
+
+  @Double apply(Double in)
+    input:set(in)
+    return output:(++sampleIndex)
+  <
+<
+
+#a = [[ 1.00000000 ][ -2.77555756e-16 ][ 3.33333333e-01 ][ -1.85037171e-17 ]]
+#b = [[ 0.16666667 ][ 0.5 ][ 0.5 ][ 0.16666667 ]]
+#iir = new IIR2(a, b)
+#vector = list(
+  -0.917843918645,  0.141984778794,  1.20536903482,   0.190286794412, 
+  -0.662370894973, -1.00700480494,  -0.404707073677,  0.800482325044,
+   0.743500089861,  1.01090520172,   0.741527555207,  0.277841675195,
+   0.400833448236, -0.2085993586,   -0.172842103641, -0.134316096293,
+   0.0259303398477, 0.490105989562,  0.549391221511,  0.9047198589
+)
+#o = vector:eachIn:eachDouble:convert(iir):cascade
+for #s steps()
+  if o:hasNext, io:print("{o:next}\t") else io:println \ break
+  if s % 4 == 3, io:println
+  
+<
+
+\\\>@double{} filter(double{} a, double{} b, double{} signal)
+  #result = new (signal.length)double
+  for #i steps():first(signal.length)
+    #tmp = 0.0
+    for #j steps():first(b.length)
+      if i - j < 0, continue
+      tmp += b{j} * signal{i - j}
+    <
+    for #j range(1, a.length - 1)
+      if i - j < 0, continue
+      tmp -= a{j} * result{i - j}
+    <
+    tmp /= a{0}
+    result{i} = tmp
+  <
+  return result
+<
+
+#a = new double{ 1.00000000, -2.77555756e-16, 3.33333333e-01, -1.85037171e-17 }
+#b = new double{ 0.16666667, 0.5, 0.5, 0.16666667 }
+ 
+#signal = new double{
+  -0.917843918645, 0.141984778794, 1.20536903482, 0.190286794412,
+  -0.662370894973, -1.00700480494, -0.404707073677, 0.800482325044,
+  0.743500089861, 1.01090520172, 0.741527555207, 0.277841675195,
+  0.400833448236, -0.2085993586, -0.172842103641, -0.134316096293,
+  0.0259303398477, 0.490105989562, 0.549391221511, 0.9047198589
+}
+ 
+#result = filter(a, b, signal)
+for #i steps():first(result.length)
+  out:printf("% .8f", result{i})
+  out.print((i + 1) % 5 != 0 ? ", " !! "\n")
+<
+<\\\

@@ -1,0 +1,10 @@
+#aa = [ 1[.A] 2[.B] 3[.C] ]
+
+io:println("Pairs:")
+for #kv aa, kv:print
+
+io:println("Keys:")
+for #k aa:each, io:println(k)
+
+io:println("Values:")
+for #v aa:eachIn:each, io:println(v)

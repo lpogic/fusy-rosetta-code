@@ -1,0 +1,133 @@
+@import suite.processor.IntProcessor
+
+#cmd = ""
+while !.exit:equals(cmd)
+  cmd = io:readln("evaluator> ")
+  switch cmd
+    case .help, io:print("
+      help - shows help\n
+      exit - closes program\n
+      else will be evaluated\n")
+    case .exit <
+    case .bye, io:println("Bye!") \ return
+    rest 
+      try
+        #v = evaluate(cmd)
+        io:println("{cmd} = {v}")
+      < catch #e, io:println("Invalid expression given!") \ e:printStackTrace
+    <
+  <
+<
+
+@double evaluate(String exp)
+  #ast = new AstProcessor():process(exp)
+  return evaluate(ast)
+<
+
+@double evaluate(Subject ast)
+  switch ast:as(@Operator, Operator.OOB)
+    case ADD, return evaluate(ast:in:at(0)) + evaluate(ast:in:at(1))
+    case SUB, return evaluate(ast:in:at(0)) - evaluate(ast:in:at(1))
+    case MUL, return evaluate(ast:in:at(0)) * evaluate(ast:in:at(1))
+    case DIV, return evaluate(ast:in:at(0)) / evaluate(ast:in:at(1))
+    rest return ast:double
+  <
+<
+
+@enum Operator(
+  ADD, SUB, MUL, DIV, OOB
+)
+  @static Operator get(int i)
+    switch i
+      case '+', return Operator.ADD
+      case '-', return Operator.SUB
+      case '*', return Operator.MUL
+      case '/', return Operator.DIV
+      rest return Operator.OOB
+    <
+  <
+<
+
+@class AstProcessor implements IntProcessor
+  @enum State(
+    BEFORE_NUMBER, NUMBER, AFTER_NUMBER
+  ) <
+
+  @Subject rpn
+  @Subject op
+  @State state
+  @StringBuilder token
+
+  @void getReady()
+    rpn = []
+    op = []
+    state = State.BEFORE_NUMBER
+  <
+
+  @int advance(int i)
+    switch state
+      case BEFORE_NUMBER
+        if i == '+' || i == '-' || i == '.' || Character:isDigit(i)
+          token = new StringBuilder()
+          token:appendCodePoint(i)
+          state = State.NUMBER
+        < 
+        elf i == '(', op:add(Operator.OOB)
+        elf !Character:isWhitespace(i), drop "e"
+      < case NUMBER
+        if i == '.' || Character:isDigit(i), token:appendCodePoint(i)
+        else
+          rpn:add(Double:parseDouble(token:toString))
+          state = State.AFTER_NUMBER
+          advance(i)
+        <
+      < case AFTER_NUMBER
+        if i == ')', pushClose()
+        elf i == '+' || i == '-' || i == '*' || i == '/', pushOp(Operator:get(i)) \ state = State.BEFORE_NUMBER
+        elf !Character:isWhitespace(i), drop "d"
+      <
+    <
+    return 0
+  <
+
+  @void pushClose()
+    for #o op:reverse
+      op:unset(o:raw)
+      if o:in:as(@Operator) == Operator.OOB, break
+      else rpn:alter(o)
+    <
+  <
+
+  @void pushOp(Operator on)
+    for #o op:reverse
+      if precedence(on) <= precedence(o:in:as(@Operator))
+        op:unset(o:raw)
+        rpn:alter(o)
+      < else break
+    <
+    op:add(on)
+  <
+
+  @int precedence(Operator o)
+    switch o
+      case ADD | SUB, return 1
+      case MUL | DIV, return 2
+      rest return 0
+    <
+  <
+
+  @Subject finish()
+    if state == State.NUMBER, advance(' ')
+    rpn:alter(op:reverse:select({s}> s:in:as(@Operator) != Operator.OOB))
+    for #s rpn
+      if s:in:is(@Operator)
+        #a = rpn:reverse(s:raw):select(2)
+        #b = rpn:reverse(s:raw):select(1)
+        s:in:in:alter(a)
+        s:in:in:alter(b)
+        rpn:unset(a:raw, b:raw)
+      <
+    <
+    return rpn:in:get
+  <
+<

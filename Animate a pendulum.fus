@@ -1,0 +1,37 @@
+@extends graphic
+@import bricks.Color
+@import bricks.wall.Updatable
+@import bricks.trait.Traits
+
+setTitle("Animate a pendulum")
+
+#L = Traits:num({}> height():float / 2 - 50)
+#g = 10.0
+#w = Traits:num({}> Math.sqrt(g / (L:float / 100)))
+
+#r = new:Circle
+r:radius:set(40)
+r:color:set(Color.mix(1,1,0,1))
+
+#l = new:Line
+l:thick:set(10)
+l:radius:set(5)
+l:begin:aim(this)
+l:end:aim(r)
+l:color:set(Color.BLACK)
+
+
+#animation = extends Updatable()
+  @long last = time()
+  @void update()
+    #time = time()
+    if last + 5 < time
+      last = time
+      #t = time / 1000.0
+      r:x:set(@@:x:float + L:float * Math:sin(Math.PI / 2 * Math:sin(w:float * t)))
+      r:y:set(@@:y:float + L:float * Math:cos(Math.PI / 2 * Math:sin(w:float * t)))
+    <
+  < 
+<
+
+lay(animation, l, r)

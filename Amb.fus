@@ -1,5 +1,5 @@
 @void amb({Series}Boolean assertion, Subject ... ambers)
-  for #s manifold(ambers)
+  for #s alg:manifold(ambers)
     if assertion:(s)
       #sc = s:each:cascade
       for #a ambers, a:reset(sc:next)
@@ -8,11 +8,11 @@
   <
 <
 
-#article = [ $the, $that, $a ]
-#noun = [ $frog, $elephant, $thing ]
-#verb = [ $walked, $treaded, $grows ]
-#adverb = [ $slowly, $quickly ]
-amb($(s)
+#article = [ .the [] .that [] .a ]
+#noun = [ .frog [] .elephant [] .thing ]
+#verb = [ .walked [] .treaded [] .grows ]
+#adverb = [ .slowly [] .quickly ]
+amb({s}
   #c = s:eachString:cascade
   #l = c:next
   for #n c
@@ -21,4 +21,4 @@ amb($(s)
   <
   return true
 <, article, noun, verb, adverb)
-pln("#{article:asString} #{noun:asString} #{verb:asString} #{adverb:asString}")
+io:println("{article:asString} {noun:asString} {verb:asString} {adverb:asString}")

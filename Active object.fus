@@ -6,14 +6,14 @@
   @float lastSample = 0
   @long lastSampleTime = 0
   @Timer timer = new Timer()
-  @{Float}Float function = $(t) 0f
+  @{Float}Float function = {t}> 0f <
 
   @void input({Float}Float function) sync this, this.function = function <
   @float output() sync this, return value <
   @void run(long samplingPeriodMs)
     #timerTask = extends TimerTask()
       @long runTime = time()
-      @+void run()
+      @void run()
          #sampleTime = time()
          sync this
            #sample = function:(@float(sampleTime - runTime))
@@ -30,9 +30,11 @@
 
 #integrator = new Integrator()
 integrator.run(1)
-integrator.input($(t) @float(Math.sin(Math.PI * t)))
+io:println("Input: sin(PI * t)")
+integrator.input({t}> @float(Math.sin(Math.PI * t)))
 hold(2000)
-integrator.input($(t) 0f)
+io:println("Input: 0")
+integrator.input({t}> 0f)
 hold(500)
-pln("Output #{ integrator:output }")
+io:println("Output { integrator:output }")
 integrator:stop

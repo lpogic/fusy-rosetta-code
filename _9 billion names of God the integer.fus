@@ -1,11 +1,11 @@
 @Series partition(int total, int partMax)
-  if total < 1, return #[[]] <
-  if total < 2, return #[[[1]]] <
-  if partMax > total, partMax = total <
-  #parts = #[]
+  if total < 1, return [[]]
+  if total < 2, return [[[1]]]
+  if partMax > total, partMax = total
+  #parts = []
   for #i range(0, partMax - 1)
     for #p partition(total - partMax + i, partMax - i):eachIn
-      parts.inset(#.add(partMax - i).alter(p))
+      parts.inset([[partMax - i]] #= p)
     <
   <
   return parts
@@ -22,22 +22,22 @@
 <
 
 @void triangle(int size)
-  #toStr = @{Integer}String #(i)
+  #toStr = @{Integer}String @(i)
     return i < 10 ? " #i  " !! i < 100 ? " #i " !! "#i "
   <
 
   for #i range(1, size)
     print(" ".repeat((size - i) << 1))
-    #c = #[]
-    for #p partition(i):eachIn:eachIn:eachInt, inc(c, p) <
-    for #ii range(1, i), print(toStr!(c.in(ii).orGiven(0))) <
-    println()
+    #c = []
+    for #p partition(i):eachIn:eachIn:eachInt, inc(c, p)
+    for #ii range(1, i), print(toStr:(c.in(ii).orGiven(0)))
+    out:println
   <
 <
 
 triangle(25)
 
-@int G(int n)\ return partition(n):set:size <
+@int G(int n) > partition(n):set:size <
 
 println("G(23) = #[G(23)]")
 \\println("G(123) = #[G(123)]")

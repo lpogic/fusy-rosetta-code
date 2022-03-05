@@ -1,0 +1,32 @@
+@record Gecos(String fullname, String office, String extension, String homephone, String email)
+  @String toString() return "{fullname},{office},{extension},{homephone},{email}" <
+<
+@record PasswdRecord(String account, String password, int UID, int GID, Gecos gecos, String directory, String shell)
+  @String toString() return "{account}:{password}:{UID}:{GID}:{gecos}:{directory}:{shell}" <
+<
+
+#filename = "passwd.txt"
+
+#jsmith = new PasswdRecord(
+  "jsmith", "x", 1001, 1000, new Gecos(
+    "Joe Smith", "Room 1007", "(234)555-8917", "(234)555-0077", "jsmith@rosettacode.org"
+  ), "/home/jsmith", "/bin/bash")
+
+#jdoe = new PasswdRecord(
+  "jdoe", "x", 1002, 1000, new Gecos(
+    "Jane Doe", "Room 1004", "(234)555-8914", "(234)555-0044", "jdoe@rosettacode.org"
+  ), "/home/jdoe", "/bin/bash")
+  
+try #file files:out(filename)
+  file:write("{jsmith}\n")
+  file:write("{jdoe}\n")
+<
+
+#xyz = new PasswdRecord(
+  "xyz", "x", 1003, 1000, new Gecos(
+    "X Yz", "Room 1003", "(234)555-8913", "(234)555-0033", "xyz@rosettacode.org"
+  ), "/home/xyz", "/bin/bash")
+
+try #file files:end(filename), file:write("{xyz}\n")
+
+try #file files:in(filename), io:println("Appended record: {lines(file):select(2)}")

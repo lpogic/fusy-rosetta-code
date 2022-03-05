@@ -14,25 +14,25 @@
 
 @Subject aliquotSequence(long n)
   #as = [n]
-  for #s steps()
+  for steps()
     n = properDivisorsSum(n)
-    if n == 0, as #= [n] \ break
-    if as:present(n) || n > nonTerminatingTreshold || as:size > 15, as:$last #= [n] \ break
-    as #= [n]
+    if n == 0, as ## n \ break
+    if as:present(n) || n > nonTerminatingTreshold || as:size > 15, as:in(.last):set(n) \ break
+    as ## n
   <
   return as
 <
 
 @void printAliquotSequence(Subject as)
   for #t as
-    if "last":equals(t:raw), print("#{t:in:raw}, ...") \ return
-    print("#{t:raw}#{t:asLong == 0 ? "" !! ", "}")
+    if "last":equals(t:raw), io:print("{t:in:raw}, ...") \ return
+    io:print("{t:raw}{t:asLong == 0 ? "" !! ", "}")
   <
 <
 
 @String classifyAliquotSequence(Subject as)
   if as:absent("last"), return "terminate"
-  #last = as:$last:asLong
+  #last = as:.last:long
   if last > nonTerminatingTreshold || as:absent(last), return "non-terminating"
   
   if as:asLong == last
@@ -40,20 +40,20 @@
     if as:size == 3, return "amicable"
     return "sociable"
   <
-  if as:reverse:select(1):asLong == last, return "aspiring"
+  if as:reverse:select(1):long == last, return "aspiring"
   return "cyclic"
 <
 
 @void printFor(long i)
   #as = aliquotSequence(i)
-  print("#i: #{classifyAliquotSequence(as)}: ")
+  io:print("{i}: {classifyAliquotSequence(as)}: ")
   printAliquotSequence(as)
-  pln()
+  io:println
 <
 
 for #i range(1, 10L)
   printFor(i)
 <
-for #i [1, 12, 28, 496, 220, 1184, 12496, 1264460, 790, 909, 562, 1064, 1488, 15355717786080L]:eachLong
+for #i set(1, 12, 28, 496, 220, 1184, 12496, 1264460, 790, 909, 562, 1064, 1488, 15355717786080L):eachLong
   printFor(i)
 <

@@ -10,11 +10,11 @@
 "
 
 @String decodeCmd(Subject commands, String abbreviation)
-  #a = abbreviation.toUpperCase()
-  for #i range(abbreviation:length, 0)
-    #c = commands:[a.substring(0, i)]
-    if c.present()
-      #cmd = c.asString()
+  #a = abbreviation:toUpperCase
+  for #i range(0, abbreviation:length):countDown
+    #c = commands:in(a.substring(0, i))
+    if c:present
+      #cmd = c:asString
       if cmd.startsWith(a), return cmd
     <
   <
@@ -22,22 +22,22 @@
 <
 
 #commands = []
-#csc = split(commandTable, ${\s}):select($(s) !s:isBlank).cascade()
+#csc = split(commandTable, `\s`):select({s}> !s:isBlank):cascade
 for #cmd csc
   cmd = cmd:toUpperCase
-  if csc.hasNext()
-    #n = csc.next()
-    if n.matches(${\d+})
+  if csc:hasNext
+    #n = csc:next
+    if n.matches(`\d+`)
       commands.put(cmd.substring(0, Integer.parseInt(n)), cmd)
-    < else
+    else
       csc.pushNext(n)
       commands.put(cmd, cmd)
     <
-  < else
+  else
     commands.put(cmd, cmd)
   <
 <
 
-#input = rln("Abbreviations, simple> ")
-for #cmd split(input, ${\s}):select($(s) !s:isBlank), print(decodeCmd(commands, cmd) + " ")
-pln()
+#input = io:readln("Abbreviations, simple> ")
+for #cmd split(input, `\s`):select({s}> !s:isBlank), io:print(decodeCmd(commands, cmd) + " ")
+io:println

@@ -9,11 +9,11 @@
   return sigmaSum
 <
 
-@Series abundantOdd(int since)
-  return Series.pull(extends Expression()
+@Sequence<Subject> abundantOdd(int since)
+  return pull(extends {}Subject()
     @int last = (since % 2) == 0 ? since - 1 !! since - 2
 
-    @+Subject play()
+    @Subject apply()
       while true
         last += 2
         #ss = sigmaSum(last)
@@ -24,22 +24,22 @@
 <
 
 @void first25()
-  for #n abundantOdd(1).first(25), pln("#{n:asInt}, sigma sum: #{n:in:asInt}")
+  for #n abundantOdd(1).first(25), io:println("{n:int}, sigma sum: {n:in:int}")
 <
 
 @void tousandth()
   #n = abundantOdd(1).select(999)
-  pln("#{n:asInt}, sigma sum: #{n:in:asInt}")
+  io:println("{n:int}, sigma sum: {n:in:int}")
 <
 
 @void billioner()
   #n = abundantOdd(1_000_000_000).first()
-  pln("#{n:asInt}, sigma sum: #{n:in:asInt}")
+  io:println("{n:int}, sigma sum: {n:in:int}")
 <
 
-pln("The first 25 abundant odd numbers are:")
+io:println("The first 25 abundant odd numbers are:")
 first25()
-pln("The one thousandth abundant odd number is:")
+io:println("The one thousandth abundant odd number is:")
 tousandth()
-pln("The first abundant odd number above one billion is:")
+io:println("The first abundant odd number above one billion is:")
 billioner()

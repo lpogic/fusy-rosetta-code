@@ -1,0 +1,25 @@
+@record Complex(double re, double im)
+  @Complex negate() return new Complex(-re, -im) <
+  @Complex inverse() #d = re * re + im * im \ return new Complex(re / d, -im / d) <
+  @Complex conjugation() return new Complex(re, -im) <
+  @Complex add(Complex that) return new Complex(re + that.re, im + that.im) <
+  @Complex subtract(Complex that) return new Complex(re - that.re, im - that.im) <
+  @Complex multiply(Complex that) return new Complex(re * that.re - im * that.im, re * that.im + im * that.re) <
+  @Complex divide(Complex that) return multiply(that:inverse) <
+  @String toString()
+    if im != 0, return "%.2f%+.2fi":formatted(re, im)
+    else return "%.2f":formatted(re)
+  <
+<
+
+#c1 = new Complex(5, -3)
+#c2 = new Complex(-2, 3.2)
+io:println("c1 = {c1}")
+io:println("-c1 = {c1:negate}")
+io:println("1/c1 = {c1:inverse}")
+io:println("conjugation(c1) = {c1:conjugation}")
+io:println("c2 = {c2}")
+io:println("c1 + c2 = {c1:add(c2)}")
+io:println("c1 - c2 = {c1:subtract(c2)}")
+io:println("c1 * c2 = {c1:multiply(c2)}")
+io:println("c1 / c2 = {c1:divide(c2)}")

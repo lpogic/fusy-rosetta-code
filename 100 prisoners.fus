@@ -1,10 +1,10 @@
 @boolean playOptimal(int n)
-  #drawers = mix(range(1, n):series).index(range(1, n)).set()
+  #drawers = mix(range(1, n):series).index(range(1, n)):set
  
-  PRISONER!! for #i range(1, n)
+  pin PRISONER for #i range(1, n)
     #prev = i
     for #j range(1, n / 2)
-      #picked = drawers:[prev]:asInt
+      #picked = drawers:in(prev):int
       if picked == i, continue PRISONER
       prev = picked
     <
@@ -16,7 +16,7 @@
 @boolean playRandom(int n)
   #drawers = mix(range(0, n):series)
 
-  PRISONER!! for #d drawers:eachInt
+  pin PRISONER for #d drawers:eachInt
     #trials = mix(range(0, n):series).first(n / 2)
     for #t trials:eachInt
       if d == t, continue PRISONER
@@ -36,6 +36,6 @@
 
 #n = 100_000
 #p = 100
-pln("\# of executions: #n")
-pln("Optimal play success rate: #{exec(n, p, this::playOptimal)}%")
-pln("Random play success rate: #{exec(n, p, this::playRandom)}%")
+io:println("# of executions: {n}")
+io:println("Optimal play success rate: {exec(n, p, this::playOptimal)}%")
+io:println("Random play success rate: {exec(n, p, this::playRandom)}%")

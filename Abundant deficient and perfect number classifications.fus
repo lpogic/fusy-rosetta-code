@@ -20,13 +20,13 @@
     elf, ++perfect
   <
   return [
-    $deficient [ deficient ]
-    $perfect [ perfect ]
-    $abundant [ abundant ]
+    .deficient [ deficient ]
+    .perfect [ perfect ]
+    .abundant [ abundant ]
   ]
 <
 
 #result = classify(1, 20_000)
-pln("deficient: #{result:$deficient:asInt}")
-pln("perfect: #{result:$perfect:asInt}")
-pln("abundant: #{result:$abundant:asInt}")
+io:println("deficient: {result:.deficient:int}")
+io:println("perfect: {result:.perfect:int}")
+io:println("abundant: {result:.abundant:int}")

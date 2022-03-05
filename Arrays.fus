@@ -1,0 +1,11 @@
+#a = new int{ 1, 2, 3 }
+a{1} = 0
+io:println(Arrays:toString(a))
+#e = a{2}
+io:println(e)
+
+#ad = [[ 4 ][ 5 ][ 6 ]]
+ad:in(ad:select(1):one) #= 8
+io:println("[{ad:eachIn:each:string(", ")}]")
+#ed = ad:in(ad:select(2):one):raw
+io:println(ed)

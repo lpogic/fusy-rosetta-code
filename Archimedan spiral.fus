@@ -1,0 +1,45 @@
+@extends graphic
+@import bricks.slab.Printable
+@import bricks.wall.Updatable
+@import bricks.trait.number.NumberSource
+@import bricks.Located
+
+@class Curve implements Updatable
+
+  @Subject lines = []
+  @Located last
+
+  @void nextPoint(Located l)
+    if last != null
+      #line = new:Line
+      line:radius:set(line:thick:get:float / 2)
+      line:begin:aim(last)
+      line:end:aim(l)
+      lines:add(line)
+    <
+    last = l
+  <
+
+  @void update()
+    #printer = printer()
+    lines:list:eachAs(@Printable):forEach(printer::print)
+  <
+<
+
+#angleStep = 0.1
+#end = Math.PI * 4
+#a = 0
+#b = 20
+#curve = new:Curve
+ 
+for #theta = 0.0; theta < end; theta += angleStep
+  #r = a + b * theta
+  #x = r * Math:cos(theta)
+  #y = r * Math:sin(theta)
+  curve:nextPoint(extends Located()
+    @NumberSource x() return @@:x:plus(x) <
+    @NumberSource y() return @@:y:plus(-y) <
+  <)
+<
+
+lay(curve)

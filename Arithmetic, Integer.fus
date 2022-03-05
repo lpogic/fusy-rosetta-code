@@ -1,0 +1,13 @@
+io:print("a: ")
+#a = io:scanner:nextInt
+io:print("b: ")
+#b = io:scanner:nextInt
+
+
+io:println("a + b = {a + b}")
+io:println("a - b = {a - b}")
+io:println("a * b = {a * b}")
+io:println("quotient(a / b) = {a / b}")
+io:println("remainder(a / b) = {a % b}")
+io:println("remainder(-a / b) = {-a % b}")
+io:println("remainder(a / -b) = {a % -b}")

@@ -1,0 +1,82 @@
+@class frac
+  @long n
+  @long d
+  
+  @new frac(long n, long d)
+    if d == 0, drop .ZeroDenominator
+    if n == 0
+      this.n = 0
+      this.d = 1
+    else
+      #absN = Math:abs(n)
+      #absD = Math:abs(d)
+      #gdc = gdc(absN, absD)
+      if n < 0 != d < 0
+        this.n = -absN / gdc
+        this.d = absD / gdc
+      else
+        this.n = absN / gdc
+        this.d = absD / gdc
+      <
+    <
+  <
+
+  @new frac(long l)
+    this.n = l
+    this.d = 1
+  <
+
+  @frac add(frac r) > new frac(n * r.d + r.n * d, d * r.d) <
+  @frac sub(frac r) > new frac(n * r.d - r.n * d, d * r.d) <
+  @frac mul(frac r) > new frac(n * r.n, d * r.d) <
+  @frac div(frac r) > new frac(n * r.d, d * r.n) <
+  @frac intDiv(frac r) #f = div(r) \ return new frac(f.n / f.d) <
+  @frac mod(frac r) > div(r):sub(intDiv(r)) <
+  @boolean eq(frac r) > n == r.n && d == r.d <
+  @boolean neq(frac r) > !eq(r) <
+  @boolean gt(frac r) > sub(r).n > 0 <
+  @boolean lt(frac r) > sub(r).n < 0 <
+  @boolean goe(frac r) > eq(r) || gt(r) <
+  @boolean loe(frac r) > eq(r) || lt(r) <
+  @frac neg() > new frac(-n, d) <
+  @frac abs() > new frac(Math:abs(n), Math:abs(d)) <
+  @long numerator() > n <
+  @long denominator() > d <
+  @frac inc(frac r) #f = add(r) \ n = f.n \ d = f.d \ return this <
+  @frac dec(frac r) #f = sub(r) \ n = f.n \ d = f.d \ return this <
+    
+  @long gdc(long a, long b) > a > 0 ? gdc(b % a, a) !! b <
+
+  @String toString() > "{n}/{d}" <
+<
+
+@frac frac(int n, int d) > new frac(n, d) <
+
+@Sequence<Integer> perfectNumbers(int max)
+  return pull(extends:{}Integer()
+    @int last = 4
+
+    @Integer apply()
+      for #i range(last, max)
+        #sum = frac(1, i)
+        for #f range(2, @int(Math:sqrt(i)))
+          if i % f == 0
+            sum:inc(frac(1, f)):inc(frac(f, i))
+          <
+        <
+        if sum:denominator == sum:numerator
+          last = i + 1
+          return i
+        <
+      <
+      return null
+    <
+  )
+<
+
+#x = 2 << 18
+io:println("Perfect numbers less than {x}: ")
+for #pn perfectNumbers(x)
+  if pn @/, break
+  io:println(pn)
+<

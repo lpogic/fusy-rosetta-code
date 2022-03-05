@@ -11,18 +11,17 @@
 @void addCmd(Subject commands, String cmd)
   #sb = new StringBuilder()
   for #cp letters(cmd)
-    if cp >= 'A' && cp <= 'Z', sb.appendCodePoint(cp)
-    else break
+    if cp >= 'A' && cp <= 'Z', sb.appendCodePoint(cp) else break
   <
-  commands #= [sb:toString[cmd:toUpperCase]]
+  commands ## [ sb:toString [ cmd:toUpperCase ] ]
 <
 
 @String decodeCmd(Subject commands, String abbreviation)
-  #a = abbreviation.toUpperCase()
+  #a = abbreviation:toUpperCase
   for #i steps(abbreviation:length, -1):first(abbreviation:length)
-    #c = commands:[a.substring(0, i)]
-    if c.present()
-      #cmd = c.asString()
+    #c = commands:in(a.substring(0, i))
+    if c:present
+      #cmd = c:asString
       if cmd.startsWith(a), return cmd
     <
   <
@@ -30,8 +29,8 @@
 <
 
 #commands = []
-for #cmd split(commandTable, ${\s}):select($(s) !s:isBlank), addCmd(commands, cmd)
+for #cmd split(commandTable, `\s`):select({s}> !s:isBlank), addCmd(commands, cmd)
 
-#input = rln("Abbreviations, easy> ")
-for #cmd split(input, ${\s}):select($(s) !s:isBlank), print(decodeCmd(commands, cmd) + " ")
-pln()
+#input = io:readln("Abbreviations, easy> ")
+for #cmd split(input, `\s`):select({s}> !s:isBlank), io:print(decodeCmd(commands, cmd) + " ")
+io:println

@@ -1,17 +1,17 @@
 @{Number}Number foo(Number initValue)
   return extends {Number}Number()
-    -Number acc = initValue
+    @Number acc = initValue
 
-    +Number apply(Number n)
-      if acc instanceof Integer && n instanceof Integer, return acc = acc:intValue + n:intValue
-      return acc = acc:floatValue + n:floatValue
+    @Number apply(Number n)
+      if acc @? Integer && n @? Integer, return acc = acc:int + n:int
+      return acc = acc:float + n:float
     <
   <
 <
 
 #x = foo(1)
 #v = x:(5)
-pln("#v of #{v:getClass}")
+io:println("{v} of {v:getClass}")
 foo(3)
 v = x:(2.3)
-pln("#v of #{v:getClass}")
+io:println("{v} of {v:getClass}")

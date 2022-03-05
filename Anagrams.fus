@@ -1,4 +1,4 @@
-#wordlist = "http://wiki.puzzlers.org/pub/wordlists/unixdict.txt"
+#wordlist = `http://wiki.puzzlers.org/pub/wordlists/unixdict.txt`
 #sets = []
 try #i inputUrl(wordlist), for #l lines(i), sets:in(normalize(l)):set(l)
 #richestSets = []
@@ -12,7 +12,7 @@ for #s sets:eachIn
 richestSets:print
 
 @String normalize(String str)
-  #sb = new StringBuilder()
+  #sb = new:StringBuilder
   for #l sort(letters(str)), sb:appendCodePoint(l)
   return sb:toString
 <

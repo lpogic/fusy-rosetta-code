@@ -1,9 +1,9 @@
-@String s(int b) return b == 1 ? "" !! "s" <
-@String n(int b) return b > 0 ? "#b" !! "No" <
+@String s(int b) > b == 1 ? "" !! "s" <
+@String n(int b) > b > 0 ? "{b}" !! "No" <
 
-for #b steps(99, -1):first(99), pln("
-  #b bottle#{s(b)} of beer on the wall\n
-  #b bottle#{s(b)} of beer\n
+for #b steps(99, -1):first(99), io:println("
+  {b} bottle{s(b)} of beer on the wall\n
+  {b} bottle{s(b)} of beer\n
   Take one down, pass it around\n
-  #{n(b - 1)} bottle#{s(b - 1)} of beer on the wall\n
+  {n(b - 1)} bottle{s(b - 1)} of beer on the wall\n
 ")

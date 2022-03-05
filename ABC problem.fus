@@ -1,7 +1,7 @@
 @boolean canMakeWord(Subject blocks, Subject occupiedBlocks, String word)
   if word:isEmpty, return true
   #letter = word.substring(0, 1)
-  for #b blocks:[letter]:eachIn
+  for #b blocks:in(letter):eachIn
     if occupiedBlocks.absent(b)
       occupiedBlocks.set(b)
       if canMakeWord(blocks, occupiedBlocks, word.substring(1)), return true
@@ -16,33 +16,33 @@
 <
 
 #blocks = [
-  [ $B, $O ] [ $X, $K ] [ $D, $Q ] [ $C, $P ] [ $N, $A ]
-  [ $G, $T ] [ $R, $E ] [ $T, $G ] [ $Q, $D ] [ $F, $S ]
-  [ $J, $W ] [ $H, $U ] [ $V, $I ] [ $A, $N ] [ $O, $B ]
-  [ $E, $R ] [ $F, $S ] [ $L, $Y ] [ $P, $C ] [ $Z, $M ]
+  [ .B [] .O ] [ .X [] .K ] [ .D [] .Q ] [ .C [] .P ] [ .N [] .A ]
+  [ .G [] .T ] [ .R [] .E ] [ .T [] .G ] [ .Q [] .D ] [ .F [] .S ]
+  [ .J [] .W ] [ .H [] .U ] [ .V [] .I ] [ .A [] .N ] [ .O [] .B ]
+  [ .E [] .R ] [ .F [] .S ] [ .L [] .Y ] [ .P [] .C ] [ .Z [] .M ]
 ]
 
 #bc = []
 for #b blocks
   #bi = b:in:get
-  for #bir bi:each, bc:[bir]:inset(bi)
+  for #bir bi:each, bc:in(bir):inset(bi)
 <
 
-for #w [ $A, $BARK, $BOOK, $TREAT, $COMMON, $SQUAD, $CONFUSE ]:eachString
-  pln("Can make word \"#w\" ? " + canMakeWord(bc, w))
+for #w [ .A [] .BARK [] .BOOK [] .TREAT [] .COMMON [] .SQUAD [] .CONFUSE ]:eachString
+  io:println("Can make word \"{w}\" ? " + canMakeWord(bc, w))
 <
 
 while true
-  #cmd = rln("ABC problem> ")
+  #cmd = io:readln("ABC problem> ")
   switch cmd
     case "exit", return
-    case "help" | "?", pln("
+    case "help" | "?", io:println("
       help | ? - shows help\n
       exit - closes program\n
       other words are tesed")
     rest
-      print("Can make word \"#cmd\" ? ")
-      pln(canMakeWord(bc, cmd))
+      io:print("Can make word \"{cmd}\" ? ")
+      io:println(canMakeWord(bc, cmd))
     <
   <
 <

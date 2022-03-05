@@ -1,0 +1,60 @@
+#diagram = `
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                      ID                       |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    QDCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    ANCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    NSCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    ARCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+`
+
+@Subject parseRow(String row)
+  #result = []
+  #cellName = new:StringBuilder
+  #cellSize = 1
+  for #lt letters(row:substring(1))
+    if lt == '|'
+      result:in(cellName:toString) #= cellSize / 3
+      cellName = new:StringBuilder
+      cellSize = 1
+    else
+      cellSize++
+      if !Character:isWhitespace(lt), cellName:appendCodePoint(lt)
+    <
+  <
+  return result
+<
+
+@case bm \ import{ BigMath } <
+
+@Subject decode(Subject header, String input)
+  #result = []
+  #in = bm:int("1" + input, 16):toString(2)
+  #sum = 1
+  for #w header
+    result:in(w:raw) #= in:substring(sum, sum + w:in:int)
+    sum += w:in:int
+  <
+  return result
+<
+
+#header = []
+for #l lines(diagram):convert(String::trim)
+  if l:startsWith("|")
+    header ## parseRow(l)
+  elf !l:matches(`^(\+--)+\+`) && !l:isBlank
+    io:err:println("Invalid input: {l}")
+  <
+<
+
+io:println("Header:\n")
+header:print
+#hex = "78477bbf5496e12e1bf169a4"
+io:println("Decoded \"{hex}\":\n")
+decode(header, hex):print

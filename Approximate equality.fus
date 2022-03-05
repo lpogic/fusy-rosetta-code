@@ -1,0 +1,20 @@
+@case bm \ import{ BigMath } <
+
+@MathContext approximation = bm:ctx(10)
+
+@boolean areApproximatelyEqual(BigDecimal n1, BigDecimal n2)
+  return n1:round(approximation):compareTo(n2:round(approximation)) == 0
+<
+
+@void test(BigDecimal n1, BigDecimal n2) 
+  io:println("Are {n1} and {n2} are approximately eqal ? {areApproximatelyEqual(n1, n2)}")
+<
+
+test(bm:dec("100000000000000.01"), bm:dec("100000000000000.011"))
+test(bm:dec("100.01"), bm:dec("100.011"))
+test(bm:dec("10000000000000.001"):divide(bm:dec("10000.0")), bm:dec("1000000000.0000001000"))
+test(bm:dec("0.001"), bm:dec("0.0010000001"))
+test(bm:dec("0.000000000000000000000101"), bm:dec("0.0"))
+test(bm:dec(2):sqrt(bm:ctx64):multiply(bm:dec(2):sqrt(bm:ctx64)), bm:dec(2.0))
+test(bm:dec(2):sqrt(bm:ctx64):negate:multiply(bm:dec(2):sqrt(bm:ctx64)), bm:dec(-2.0))
+test(bm:dec("3.14159265358979323846"), bm:dec("3.14159265358979324"))

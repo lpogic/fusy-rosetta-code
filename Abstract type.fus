@@ -1,9 +1,23 @@
 @?class AbstractClass
-  @?void abstractMethod()
-  @void regularMethod() <
+  @String abstractClassField = .abstractClassField
+
+  @void abstractClassMethod() io:println(.abstractClassMethod) <
+  @?void abstractClassAbstractMethod()
 <
 
 @interface Interface
-  @?void abstractMethod()
-  @void regularMethod() <
+  @void interfaceMethod() io:println(.interfaceMethod) <
+  @?void interfaceAbstractMethod()
 <
+
+@class RegularClass extends AbstractClass implements Interface
+
+  @void abstractClassAbstractMethod() io:println(abstractClassField) <
+  @void interfaceAbstractMethod() io:println(.interfaceAbstractMethod) <
+<
+
+#rc = new RegularClass()
+rc:abstractClassMethod
+rc:abstractClassAbstractMethod
+rc:interfaceMethod
+rc:interfaceAbstractMethod

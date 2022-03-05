@@ -1,0 +1,17 @@
+#scales = [
+  .d [ 36e1 ]
+  .g [ 4e2 ]
+  .m [ 64e2 ]
+  .r [ Math.PI * 2 ]
+]
+
+for #v set(-2, -1, 0, 1, 2, 6.2831853, 16, 57.2957795, 359, 399, 6399, 1000000):eachDouble
+  for #w alg:words(set(.d, .g, .m, .r), 2, true):convert({s}> s:cascade)
+    #s1 = w:next:asString
+    #s2 = w:next:asString
+    io:prinfln("{s1}2{s2}({v}) = %.4f", convert(v, scales:in(s1):double, scales:in(s2):double))
+  <
+<
+
+@double norm(double a, double scale) return a - Math.floor(Math.abs(a) / scale) * Math.signum(a) * scale <
+@double convert(double a, double inScale, double outScale) return norm(a / inScale * outScale, outScale) <

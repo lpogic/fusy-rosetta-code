@@ -7,25 +7,25 @@
   justified,$right$justified,$or$center$justified$within$its$column.\n
 "
 
-#lengths = []\\ #[&[Integer]]
-#tokens = []\\ #[&[&[String]]]
+#lengths = [] \\ [&[Integer]]
+#tokens = [] \\ [&[&[String]]]
 
-for #line split(input, "\n")
+for #line split(input, `\n`)
   #tl = []
   #newLengths = []
   #lc = lengths:cascade
-  for #t split(line, ${\$})
+  for #t split(line, `\$`)
     if lc:hasNext
       #n = lc:next
-      newLengths #= [[Math:max(n:in:asInt, t:length + 1)]]
-    < else
-      newLengths #= [[t:length]]
+      newLengths #+ Math:max(n:in:asInt, t:length + 1)
+    else
+      newLengths #+ t:length
     <
-    tl #= [[t]]
+    tl #+ t
   <
-  for #l lc, newLengths #= [[l:in:raw]]
+  for #l lc, newLengths #+ l:in:raw
   lengths = newLengths
-  tokens #= [#[tl]]
+  tokens #+ tl
 <
 
 for #t tokens:eachIn
@@ -34,11 +34,11 @@ for #t tokens:eachIn
   for #t1 t:eachIn:eachString
     #l = lc:next
     #i = steps:next
-    print(i % 3 == 2 ? justifyRight(t1, l) !!
+    io:print(i % 3 == 2 ? justifyRight(t1, l) !!
       i % 3 == 1 ? justifyCenter(t1, l) !! 
       justifyLeft(t1, l))
   <
-  pln()
+  io:println
 <
 
 @String justifyLeft(String str, int totalLength)

@@ -1,0 +1,1 @@
+io:println([1, 2, 3, 4, 5]:eachInt:convert({i}> i * i):string)

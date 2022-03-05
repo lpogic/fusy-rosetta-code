@@ -1,0 +1,79 @@
+@class Buckets
+  @Subject buckets
+
+  @new Buckets(int size)
+    buckets = []
+    for #i range(0, size - 1)
+      buckets:put(i, 44)
+    <
+  <
+
+  @int size() > buckets:size <
+
+  @int getValue(int i) > buckets:in(i):int <
+
+  @void transfer(int from, int to, int amount)
+    if from == to, return
+    #fromValue = buckets:in(from):int
+    if fromValue <= 0, return
+    #toValue = buckets:in(to):int
+    if toValue >= 88, return
+    buckets:in(from) #= fromValue - amount  
+    buckets:in(to) #= buckets:in(to):int + amount
+  <
+
+  @String toString()
+    #sb = new:StringBuilder
+    #total = 0
+    for #b buckets:eachIn:eachInt
+      sb:append(String:format("\\%02d/ ", b))
+      total += b
+    <
+    return sb:toString + " total: {total}"
+  <
+<
+
+@Buckets buckets = new:Buckets(8)
+
+@/printJob()
+  while true
+    sync buckets
+      io:println(buckets)
+    <
+    hold(500)
+  <
+<
+
+@/equalJob()
+  while true
+    #s = buckets:size
+    #a = random(s - 1)
+    #b = (a + random(s - 1)) % s
+    sync buckets
+      #av = buckets:getValue(a)
+      #bv = buckets:getValue(b)
+      if av > bv, buckets:transfer(a, b, 1) \
+      elf av < bv, buckets:transfer(b, a, 1)
+    <
+    hold(1)
+  <
+<
+
+@/stirJob()
+  while true
+    #s = buckets:size
+    #a = random(s - 1)
+    #b = (a + random(s - 1)) % s
+    sync buckets
+      #av = buckets:getValue(a)
+      #bv = buckets:getValue(b)
+      if av < bv, buckets:transfer(a, b, 1) \
+      else, buckets:transfer(b, a, 1)
+    <
+    hold(1)
+  <
+<
+
+os:run(this::printJob)
+os:run(this::equalJob)
+os:run(this::stirJob)

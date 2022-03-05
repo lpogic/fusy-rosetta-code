@@ -1,4 +1,4 @@
-#wordlist = "http://wiki.puzzlers.org/pub/wordlists/unixdict.txt"
+#wordlist = `http://wiki.puzzlers.org/pub/wordlists/unixdict.txt`
 #sets = []
 #longest = []
 #longestLength = 0
@@ -26,7 +26,7 @@ longest:print
   #cb = letters(b):cascade
   for #s steps()
     if !ca:hasNext || !cb:hasNext, return true
-    if ca:next:intValue == cb:next:intValue, return false
+    if ca:next:int == cb:next:int, return false
   <
   drop 0
 <

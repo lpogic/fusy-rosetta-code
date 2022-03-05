@@ -2,12 +2,12 @@
   @Subject board
   @Subject availableMoves
 
-  @enum Move
-    UP(   $(i, j) i + j * 4)
-    DOWN( $(i, j) 15 - i - j * 4)
-    LEFT( $(i, j) i * 4 + j)
-    RIGHT($(i, j) 15 - i * 4 - j)
-  >
+  @enum Move(
+    UP(   {i, j}> i + j * 4)
+    DOWN( {i, j}> 15 - i - j * 4)
+    LEFT( {i, j}> i * 4 + j)
+    RIGHT({i, j}> 15 - i * 4 - j)
+  )
     @{Integer, Integer}Integer indexFun
 
     @new Move({Integer, Integer}Integer indexFun)
@@ -16,15 +16,15 @@
   <
 
   @new Game2048()
-    board = Sequence.pull($() 0).index(range(0, 15)).set()
+    board = pull({}> 0).index(range(0, 15)).set()
   <
 
   @Subject freeSlots()
-    return board.select($(s) s:in:asInt == 0).set()
+    return board.select({s}> s:in:int == 0).set()
   <
 
   @boolean win()
-    return board.select($(s) s:in:asInt == 2048).present()
+    return board.select({s}> s:in:int == 2048).present()
   <
 
   @boolean loose()
@@ -56,10 +56,10 @@
     for #i range(0, 3)
       #l = -1
       for #j range(0, 3)
-        #c = board.in(move.indexFun:(i, j)).asInt()
+        #c = board.in(move.indexFun:(i, j)):int
         if l == 0
           if c != 0, return true
-        < else
+        else
           if c == l, return true
         <
         l = c
@@ -69,16 +69,21 @@
   <
 
   @Subject moveOne(Subject slots)
-    if slots.absent(), return slots
+    if slots:absent, return slots
     #a_ = slots.take(slots:raw)
-    #a = a_:in:asInt()
+    #a = a_:in:int
     if a == 0, return moveOne(slots)
-    if slots.absent(), return a_
+    if slots:absent, return a_
     #b_ = slots.take(slots:raw)
-    #b = b_:in:asInt()
+    #b = b_:in:int
+    if b == 0, return moveOne([] #+ a ## slots)
+    if a == b, return [] #+ a << 1 ## moveOne(slots)
+    return [] #+ a ## moveOne([] #+ b ## slots)
+\\\
     if b == 0, return moveOne([[a]] #= slots)
     if a == b, return [[a << 1]] #= moveOne(slots)
     return [[a]] #= moveOne([[b]] #= slots)
+\\\
   <
 
   @boolean move(Move move)
@@ -88,7 +93,7 @@
       for #j range(0, 3)
         s.add(board.in(move.indexFun:(i, j)):raw)
       <
-      #ssc = moveOne(s):eachIn:eachInt:cascade()
+      #ssc = moveOne(s):eachIn:eachInt:cascade
       for #j range(0, 3)
         board.in(move.indexFun:(i, j)).reset(ssc.nextOr(0))
       <
@@ -99,40 +104,40 @@
 
   @void draw()
     for #y range(0, 3)
-      pln("+-------+-------+-------+-------+")
-      pln("|       |       |       |       |")
+      io:println("+-------+-------+-------+-------+")
+      io:println("|       |       |       |       |")
       for #x range(0, 3)
-        #x1 = board.in(4 * y + x).asInt()
-        if x1 == 0, print("|       ")
-        elf x1 <= 10, print("|   #x1   ")
-        elf x1 <= 100, print("|  #x1   ")
-        elf x1 <= 1000, print("|  #x1  ")
-        elf, print("| #x1  ")
+        #x1 = board.in(4 * y + x):int
+        if x1 == 0, io:print("|       ")
+        elf x1 <= 10, io:print("|   {x1}   ")
+        elf x1 <= 100, io:print("|  {x1}   ")
+        elf x1 <= 1000, io:print("|  {x1}  ")
+        elf, io:print("| {x1}  ")
       <
-      pln("|")
-      pln("|       |       |       |       |")
+      io:println("|")
+      io:println("|       |       |       |       |")
     <
-    pln("+-------+-------+-------+-------+")
+    io:println("+-------+-------+-------+-------+")
   <
 <
 
 #cmdToMove = [
-  $w [ Game2048.Move.UP ]
-  $s [ Game2048.Move.DOWN ]
-  $a [ Game2048.Move.LEFT ]
-  $d [ Game2048.Move.RIGHT ]
+  .w [ Game2048.Move.UP ]
+  .s [ Game2048.Move.DOWN ]
+  .a [ Game2048.Move.LEFT ]
+  .d [ Game2048.Move.RIGHT ]
 ]
 
 #game = new Game2048()
-game.spawn()
-game.spawn()
-game.spawn()
-game.draw()
+game:spawn
+game:spawn
+game:spawn
+game:draw
 #cmd = ""
 while !"exit".equals(cmd)
-  cmd = rln("2048> ")
+  cmd = io:readln("2048> ")
   switch cmd
-    case "help", pln("
+    case "help", io:println("
       help - shows help\n
       draw - draws game state\n
       w - move up\n
@@ -140,18 +145,19 @@ while !"exit".equals(cmd)
       a - move left\n
       d - move right\n
       exit - close this program")
-    case "draw", game.draw()
+    case "draw", game:draw
     case "exit" <
     rest
-      #m = cmdToMove.in(cmd).get()
-      if m.present()
+      #m = cmdToMove.in(cmd):get
+      if m:present
         if game.move(m:one)
-          if game.win(), game.draw() \ pln("YOU WIN!") \ return
-          game.spawn()
-          game.draw()
-          if game.loose(), pln("YOU LOOSE!") \ return
-        < else pln("Move #{m:raw} is not available")
-      < else pln("Invalid cmd '#cmd'. Type 'help' to list commands")
+          if game:win, game:draw \ io:println("YOU WIN!") \ return
+          game:spawn
+          os:cleanConsole
+          game:draw
+          if game:loose, io:println("YOU LOOSE!") \ return
+        else io:println("Move {m:raw} is not available")
+      else io:println("Invalid cmd '{cmd}'. Type 'help' to list commands")
     <
   <
 <

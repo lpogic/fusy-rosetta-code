@@ -9,8 +9,8 @@
   return dividorsSum
 <
 
-pln("Admicable pairs below 20000:")
+io:println("Admicable pairs below 20000:")
 for #n steps():first(20_000)
   #pds = properDivisorsSum(n)
-  if n < pds && properDivisorsSum(pds) == n, pln("#n and #pds")
+  if n < pds && properDivisorsSum(pds) == n, io:println("{n} and {pds}")
 <

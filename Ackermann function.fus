@@ -2,9 +2,9 @@
   if m == 0, return n + 1
   if m > 0 && n == 0, return A(m - 1, 1)
   if m > 0 && n > 0, return A(m - 1, A(m, n - 1))
-  drop "Invalid arguments: m = #m, n = #n"
+  drop "Invalid arguments: m = {m}, n = {n}"
 <
 
-pln(A(0, 0))
-pln(A(3, 5))
-pln(A(-1, 0))
+io:println(A(0, 0))
+io:println(A(3, 5))
+io:println(A(-1, 0))
